@@ -8,80 +8,140 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $users = User::all();
-        return view('users.index', compact('users'));
+    public function register(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'firstname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'string', 'min:6'],
+            'adresse' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'role' => 'required|integer',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'=>false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 401);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'role' => 'user',
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+        
+        $token = $user->createToken("API TOKEN")->plainTextToken;
+        
+        return response()->json([
+            'status' => true,
+            'message' => 'User Created Successfully',
+            'token' => $token,
+        ], 200);
     }
 
-    public function create()
+    public function login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'=>false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 401);
+        }
+        if (Auth::attempt($request->all())) {
+            if(auth('sanctum')->check()){
+            auth()->user()->tokens()->delete();
+            }
+        }
+        $user = Auth::user();
+
+        $token = $user->createToken("API TOKEN")->plainTextToken;
+
+        return response()->json([
+            'status'=>true,
+            'message' => 'Login successful',
+            'user' => $user,
+            "token" => $token,
+        ]);
+    }
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
-        return view('users.create');
+        $user = User::find($id);
+        return $user;
     }
 
-    public function store(Request $request)
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'firstname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'string', 'min:6'],
             'adresse' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'role' => 'required|integer',
         ]);
-
-        User::create([
-            'name' => $request->name,
-            'firstname' => $request->firstname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'adresse' => $request->adresse,
-            'city' => $request->city,
-            'role' => $request->role,
-        ]);
-
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+        $user = User::find($id);
+        $user->update($request->all());
+        return $user;
     }
 
-    public function show(User $user)
+    public function isAdmin()
     {
-        return view('users.show', compact('user'));
+        $user = Auth::user();
+        
+        if ($user->role === 'user') {
+            return response()->json([
+                'response'=>false,
+            ]);
+        } else if ($user->role === "administrator") {
+            return response()->json([
+                'response'=>true,
+            ]);
+        }
     }
 
-    public function edit(User $user)
+    public function logout(Request $request)
     {
-        return view('users.edit', compact('user'));
+        $user = Auth::user();
+
+        if ($user) {
+            $user->tokens()->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Logout successful',
+            ]);
+        }
+        
+        return response()->json([
+            'status' => false,
+            'message' => 'User not authenticated',
+        ], 401);
     }
-
-    public function update(Request $request, User $user)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'firstname' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-            'adresse' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'role' => 'required|integer',
-        ]);
-
-        $user->update([
-            'name' => $request->name,
-            'firstname' => $request->firstname,
-            'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
-            'adresse' => $request->adresse,
-            'city' => $request->city,
-            'role' => $request->role,
-        ]);
-
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
-    }
-
-    public function destroy(User $user)
-    {
+        $user = User::find($id);
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        return 'User deleted successfully';
     }
 }

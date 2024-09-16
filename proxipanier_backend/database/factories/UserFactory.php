@@ -16,6 +16,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'roles' => 1,
             'name' => $this->faker->name,
             'firstname' => $this->faker->firstName,
             'email' => $this->faker->unique()->safeEmail,
@@ -24,7 +25,6 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'adresse' => $this->faker->address,
             'city' => $this->faker->city,
-            'role_id' => $this->faker->numberBetween(1, 3),
         ];
     }
 

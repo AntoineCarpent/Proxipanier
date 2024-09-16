@@ -18,3 +18,16 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/.vagrant
+composer.phar
+/storage/logs/*.log
+/storage/framework/cache/*
+/storage/framework/views/*
+/storage/framework/sessions/*
+/bootstrap/cache/*
+/public/css/app.css
+/public/js/app.js
+/public/mix-manifest.json
+.DS_Store
+Thumbs.db
+

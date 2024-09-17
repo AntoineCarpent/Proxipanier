@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Model
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
     protected $fillable = [
+        'role',
         'name',
         'firstname',
         'email',
         'password',
         'adresse',
         'city',
-        'role',
     ];
 
     public function setPasswordAttribute($password)
@@ -30,3 +31,5 @@ class User extends Model
         return $this->belongsTo(Role::class);
     }
 }
+
+

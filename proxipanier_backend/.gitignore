@@ -1,32 +1,52 @@
-/.phpunit.cache
+# Laravel
+/vendor
 /node_modules
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
-/vendor
+
+# Environment files
 .env
 .env.backup
 .env.production
-.phpactor.json
+
+# PHPUnit
+.phpunit.cache
 .phpunit.result.cache
+
+# Homestead
 Homestead.json
 Homestead.yaml
+
+# Auth
 auth.json
+
+# NPM and Yarn
 npm-debug.log
 yarn-error.log
-/.fleet
+
+# IDEs and editors
 /.idea
 /.vscode
-/.vagrant
-composer.phar
-/storage/logs/*.log
-/storage/framework/cache/*
-/storage/framework/views/*
-/storage/framework/sessions/*
-/bootstrap/cache/*
-/public/css/app.css
-/public/js/app.js
-/public/mix-manifest.json
+/.zed
+
+# Misc
+/.fleet
+
+# Other
+/.phpactor.json
+
+# Laravel specific
+bootstrap/cache/*.php
+storage/framework/sessions/*.php
+storage/framework/views/*.php
+storage/framework/cache/*.php
+storage/logs/*.log
+
+# MacOS
 .DS_Store
+
+# Windows
 Thumbs.db
+ehthumbs.db

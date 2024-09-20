@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 
 class UserController extends Controller
@@ -21,15 +21,50 @@ class UserController extends Controller
     }
 
     public function register(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'role' => 'required|integer|in:1,2',
+        'name' => 'required|string|max:255',
+        'firstname' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => ['required', 'string', 'min:6'],
+        'address' => 'required|string|max:255',
+        'city' => 'required|string|max:255',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Validation error',
+            'errors' => $validator->errors(),
+        ], 401);
+    }
+
+    $user = User::create([
+        'name' => $request->name,
+        'firstname' => $request->firstname,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+        'address' => $request->address,
+        'city' => $request->city,
+        'role' => $request->role,
+    ]);
+
+    $token = $user->createToken("API TOKEN")->plainTextToken;
+
+    return response()->json([
+        'status' => true,
+        'message' => 'User Created Successfully',
+        'token' => $token,
+    ], 200);
+}
+
+
+public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'role' => 'required|integer|in:1,2',
-            'name' => 'required|string|max:255',
-            'firstname' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => ['required', 'string', 'min:6'],
-            'adresse' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
         ]);
 
         if ($validator->fails()) {
@@ -37,60 +72,30 @@ class UserController extends Controller
                 'status' => false,
                 'message' => 'Validation error',
                 'errors' => $validator->errors(),
-            ], 401);
+            ], 422);
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'firstname' => $request->firstname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'adresse' => $request->adresse,
-            'city' => $request->city,
-            'role' => $request->role,
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        $token = $user->createToken("API TOKEN")->plainTextToken;
-        
-        return response()->json([
-            'status' => true,
-            'message' => 'User Created Successfully',
-            'token' => $token,
-        ], 200);
-    }
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $user->tokens()->delete();
 
-    public function login(Request $request){
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
+            $token = $user->createToken("API TOKEN")->plainTextToken;
 
-        if($validator->fails()){
             return response()->json([
-                'status'=>false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 401);
-        }
-        if (Auth::attempt($request->all())) {
-            if(auth('sanctum')->check()){
-            auth()->user()->tokens()->delete();
-            }
+                'status' => true,
+                'message' => 'Login successful',
+                'user' => $user,
+                'token' => $token,
+            ], 200);
         }
 
-        $user = Auth::user();
-        $token = $user->createToken("API TOKEN")->plainTextToken;
         return response()->json([
-            'status'=>true,
-            'message' => 'Login successful',
-            'user' => $user,
-            "token" => $token,
-        ]);
-
+            'status' => false,
+            'message' => 'Invalid credentials',
+        ], 401);
     }
-
-
-
     /**
      * Display the specified resource.
      */
@@ -106,29 +111,45 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required',
-            'role' => 'required',
-        ]);
         $user = User::find($id);
-        $user->update($request->all());
-        return $user;
-    }
-
-    public function isAdmin()
-    {
-        $user = Auth::user();
-        
-        if ($user->role === 'user') {
+    
+        if (!$user) {
             return response()->json([
-                'response'=>false,
-            ]);
-        } else if ($user->role === "administrator") {
-            return response()->json([
-                'response'=>true,
-            ]);
+                'status' => false,
+                'message' => 'User not found',
+            ], 404);
         }
+    
+        $validator = Validator::make($request->all(), [
+            'role' => 'required|integer|in:1,2',
+            'name' => 'required|string|max:255',
+            'firstname' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => ['nullable', 'string', 'min:6'],
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+    
+        $user->update($validator->validated());
+    
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }
+    
+        return response()->json([
+            'status' => true,
+            'message' => 'User updated successfully',
+            'user' => $user,
+        ]);
     }
 
     public function logout(Request $request)
@@ -137,7 +158,6 @@ class UserController extends Controller
 
         if ($user) {
             $user->tokens()->delete();
-
             return response()->json([
                 'status' => true,
                 'message' => 'Logout successful',
@@ -157,7 +177,20 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $user = User::find($id);
-        $user->delete();
-        return 'User deleted successfully';
+
+        if ($user) {
+            $user->saleSheet()->delete();
+            $user->tokens()->delete();
+            $user->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'User deleted successfully',
+            ], 200);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'User not found',
+        ], 404);
     }
 }

@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\SalesSheets;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory(10)->create(); 
+        SalesSheets::factory(3)->create();
     }
 }

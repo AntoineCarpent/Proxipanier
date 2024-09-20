@@ -3,30 +3,33 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Model
+class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
     protected $fillable = [
+        'role',
         'name',
         'firstname',
         'email',
         'password',
-        'adresse',
+        'address',
         'city',
-        'role',
     ];
 
-    public function setPasswordAttribute($password)
-    {
-        $this->attributes['password'] = Hash::make($password);
-    }
+    protected $hidden = [
+        'password',
+    ];
 
-    public function role()
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    public function saleSheet()
     {
-        return $this->belongsTo(Role::class);
+        return $this->hasMany(SalesSheets::class);
     }
 }

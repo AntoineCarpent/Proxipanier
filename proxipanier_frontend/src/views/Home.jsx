@@ -1,10 +1,9 @@
 import React from 'react';
-import SalesSheetsList from '../components/SalesSheetsList';
-
+import ProducerList from '../components/ProducerList';
 const Home = () => {
     return (
         <div>
-            <SalesSheetsList />
+            <ProducerList />
         </div>
     );
 };

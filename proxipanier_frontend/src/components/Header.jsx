@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
     const [scrolling, setScrolling] = useState(false);
@@ -30,13 +30,13 @@ const Header = () => {
     }
 
     return (
-        <div className={`navbar fixed top-0 left-0 w-full z-10 transition-colors duration-300 ${scrolling ? 'bg-[#0B1D26]' : 'bg-transparent'} text-white`}>
+        <div className={`navbar fixed top-0 left-0 w-full z-10 transition-colors duration-300 h-24 ${scrolling ? 'bg-[#0B1D26]' : 'bg-transparent'} text-white`}>
             <div className="navbar-start">
-                <Link to="/" className="btn btn-ghost p-0">
-                    <img 
-                        src="/images/Soldout-removebg-preview.png" 
-                        alt="Logo Soldout" 
-                        className="h-16 w-auto object-contain"
+                <Link to="/" className="btn btn-ghost h-24">
+                    <img
+                        src="/images/logo.png"
+                        alt="Logo"
+                        className="h-24 w-auto object-contain"
                     />
                 </Link>
             </div>
@@ -49,7 +49,7 @@ const Header = () => {
             </div>
             <div className="navbar-end">
                 <button
-                    className={`btn border transition duration-300 mr-5 ${scrolling ? 'border-[#FBD784] text-[#FBD784] hover:bg-[#FBD784] hover:text-[#0B1D26]' : 'text-white hover:bg-transparent'}`}
+                    className={`btn border transition duration-300 mr-5 ${scrolling ? 'border-[#FBD784] text-[#FBD784] hover:bg-[#FBD784] hover:text-[#0B1D26]' : 'text-white hover:bg-transparent hover:text-[#000000]'}`}
                     onClick={handleLogout}
                 >
                     Déconnexion

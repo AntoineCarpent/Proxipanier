@@ -21,46 +21,46 @@ class UserController extends Controller
     }
 
     public function register(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'role' => 'required|integer|in:1,2',
-        'name' => 'required|string|max:255',
-        'firstname' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'password' => ['required', 'string', 'min:6'],
-        'address' => 'required|string|max:255',
-        'city' => 'required|string|max:255',
-    ]);
+    {
+        $validator = Validator::make($request->all(), [
+            'role' => 'required|integer|in:1,2',
+            'name' => 'required|string|max:255',
+            'firstname' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => ['required', 'string', 'min:6'],
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+        ]);
 
-    if ($validator->fails()) {
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 401);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'firstname' => $request->firstname,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'address' => $request->address,
+            'city' => $request->city,
+            'role' => $request->role,
+        ]);
+
+        $token = $user->createToken("API TOKEN")->plainTextToken;
+
         return response()->json([
-            'status' => false,
-            'message' => 'Validation error',
-            'errors' => $validator->errors(),
-        ], 401);
+            'status' => true,
+            'message' => 'User Created Successfully',
+            'token' => $token,
+        ], 200);
     }
 
-    $user = User::create([
-        'name' => $request->name,
-        'firstname' => $request->firstname,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-        'address' => $request->address,
-        'city' => $request->city,
-        'role' => $request->role,
-    ]);
 
-    $token = $user->createToken("API TOKEN")->plainTextToken;
-
-    return response()->json([
-        'status' => true,
-        'message' => 'User Created Successfully',
-        'token' => $token,
-    ], 200);
-}
-
-
-public function login(Request $request)
+    public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
@@ -112,14 +112,14 @@ public function login(Request $request)
     public function update(Request $request, string $id)
     {
         $user = User::find($id);
-    
+
         if (!$user) {
             return response()->json([
                 'status' => false,
                 'message' => 'User not found',
             ], 404);
         }
-    
+
         $validator = Validator::make($request->all(), [
             'role' => 'required|integer|in:1,2',
             'name' => 'required|string|max:255',
@@ -129,7 +129,7 @@ public function login(Request $request)
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
@@ -137,14 +137,14 @@ public function login(Request $request)
                 'errors' => $validator->errors(),
             ], 422);
         }
-    
+
         $user->update($validator->validated());
-    
+
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
             $user->save();
         }
-    
+
         return response()->json([
             'status' => true,
             'message' => 'User updated successfully',
@@ -179,9 +179,14 @@ public function login(Request $request)
         $user = User::find($id);
 
         if ($user) {
-            $user->saleSheet()->delete();
+            if ($user->salesSheets()->exists()) {
+                $user->salesSheets()->delete();
+            }
+
             $user->tokens()->delete();
+
             $user->delete();
+
             return response()->json([
                 'status' => true,
                 'message' => 'User deleted successfully',

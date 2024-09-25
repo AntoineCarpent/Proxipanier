@@ -3,7 +3,7 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
 import ShowProducer from './components/ShowProducer';
-import UserProfile from './components/UserProfile';
+import UserProfile from './components/ShowUser';
 import EditUser from './components/EditUser';
 import './style/App.css';
 import Home from './views/Home';

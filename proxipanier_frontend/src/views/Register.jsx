@@ -29,7 +29,7 @@ function Register() {
             });
             console.log('User registered:', response.data);
 
-            navigate('/home');
+            navigate('/login');
         } catch (err) {
             setError('Registration failed.');
         }

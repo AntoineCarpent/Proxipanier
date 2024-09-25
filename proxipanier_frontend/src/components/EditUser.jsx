@@ -1,161 +1,145 @@
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
-const EditUser = () => {
-    const [user, setUser] = useState({
-        firstname: '',
+const EditUser = ({ userId, onCancel, setUsers }) => {
+    const [userData, setUserData] = useState({
         name: '',
+        firstname: '',
         email: '',
+        password: '',
         address: '',
-        city: ''
+        city: '',
     });
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+    const { id } = useParams();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
-            axios.get('http://localhost:8000/api/user', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
+        axios.get(`http://localhost:8000/api/users/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
             .then(response => {
-                setUser(response.data);
-                setLoading(false);
+                setUserData({
+                    name: response.data.name,
+                    firstname: response.data.firstname,
+                    email: response.data.email,
+                    password: '',
+                    address: response.data.address,
+                    city: response.data.city,
+                });
             })
-            .catch(() => {
-                setError('Erreur lors du chargement des informations utilisateur');
-                setLoading(false);
+            .catch(error => {
+                console.error('Erreur lors de la récupération des informations de l\'utilisateur:', error);
             });
-        } else {
-            setError('Aucun token trouvé');
-            setLoading(false);
-        }
-    }, []);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUser((prevUser) => ({
-            ...prevUser,
+    }, [id]);
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setUserData({
+            ...userData,
             [name]: value,
-        }));
+        });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault();
         const token = localStorage.getItem('token');
-
-        if (token) {
-            axios.put(`http://localhost:8000/api/user/${user.id}`, user, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+        axios.put(`http://localhost:8000/api/users/${id}`, userData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                console.log('Utilisateur mis à jour avec succès:', response.data);
+                setUsers(users => users.map(user => (user.id === userId ? response.data : user)));
+                onCancel();
             })
-            .then(() => {
-                alert('Profil mis à jour avec succès');
-                navigate(`/user/${user.id}`);
-            })
-            .catch(() => {
-                setError('Erreur lors de la mise à jour du profil');
+            .catch(error => {
+                console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
             });
-        } else {
-            setError('Aucun token trouvé');
-        }
     };
-
-    if (loading) {
-        return <p>Chargement...</p>;
-    }
-
-    if (error) {
-        return <p>{error}</p>;
-    }
 
     return (
         <div className="flex flex-col items-center mt-20">
-            <div className="grid grid-cols-1 gap-4 w-3/5 rounded-lg overflow-hidden bg-transparent shadow-lg p-6">
-                <h3 className="text-[#FBD784] text-lg mb-4">
-                    <span className='w-10 h-px bg-[#FBD784]'></span>Modifier Profil
-                </h3>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label htmlFor="firstname" className="text-white font-semibold">Prénom:</label>
-                        <input
-                            type="text"
-                            name="firstname"
-                            id="firstname"
-                            value={user.firstname}
-                            onChange={handleChange}
-                            className="input input-bordered w-full mt-1 bg-transparent text-white rounded-md border-2 border-[#FBD784]"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="name" className="text-white font-semibold">Nom:</label>
-                        <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            value={user.name}
-                            onChange={handleChange}
-                            className="input input-bordered w-full mt-1 bg-transparent text-white rounded-md border-2 border-[#FBD784]"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="email" className="text-white font-semibold">Email:</label>
-                        <input
-                            type="email"
-                            name="email"
-                            id="email"
-                            value={user.email}
-                            onChange={handleChange}
-                            className="input input-bordered w-full mt-1 bg-transparent text-white rounded-md border-2 border-[#FBD784]"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="address" className="text-white font-semibold">Adresse:</label>
-                        <input
-                            type="text"
-                            name="address"
-                            id="address"
-                            value={user.address}
-                            onChange={handleChange}
-                            className="input input-bordered w-full mt-1 bg-transparent text-white rounded-md border-2 border-[#FBD784]"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="city" className="text-white font-semibold">Ville:</label>
-                        <input
-                            type="text"
-                            name="city"
-                            id="city"
-                            value={user.city}
-                            onChange={handleChange}
-                            className="input input-bordered w-full mt-1 bg-transparent text-white rounded-md border-2 border-[#FBD784]"
-                        />
-                    </div>
-                    <div className="flex justify-end space-x-4">
-                        <button
-                            type="button"
-                            onClick={() => navigate(-1)}
-                            className="btn bg-transparent text-[#FBD784] border-[#FBD784] hover:bg-[#FBD784] hover:text-[#0e2631] rounded-md"
-                        >
-                            Annuler
-                        </button>
-                        <button
-                            type="submit"
-                            className="btn bg-transparent text-[#FBD784] border-[#FBD784] hover:bg-[#FBD784] hover:text-[#0e2631] rounded-md"
-                        >
-                            Enregistrer les modifications
-                        </button>
-                    </div>
-                </form>
-            </div>
+            <form
+                onSubmit={handleSubmit}
+                className="grid grid-cols-1 gap-4 w-3/5 rounded-lg overflow-hidden bg-transparent shadow-lg p-6 border-2 border-[#FBD784]"
+            >
+                <h3 className="text-[#FBD784] text-lg mb-4">Modifier l'utilisateur</h3>
+
+                <label className="text-white" htmlFor="nom">Nom</label>
+                <input
+                    type="text"
+                    name={userData.name}
+                    value={userData.name}
+                    onChange={handleChange}
+                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                    required
+                />
+
+                <label className="text-white" htmlFor="prenom">Prénom:</label>
+                <input
+                    type="text"
+                    name="prenom"
+                    value={userData.firstname}
+                    onChange={handleChange}
+                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                    required
+                />
+
+                <label className="text-white" htmlFor="email">Email:</label>
+                <input
+                    type="email"
+                    name="email"
+                    value={userData.email}
+                    onChange={handleChange}
+                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                    required
+                />
+
+                <label className="text-white" htmlFor="mot_de_passe">Mot de passe:</label>
+                <input
+                    type="password"
+                    name="mot_de_passe"
+                    value="******"
+                    onChange={handleChange}
+                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                    required
+                />
+
+                <label className="text-white" htmlFor="adresse">Adresse:</label>
+                <input
+                    type="text"
+                    name="adresse"
+                    value={userData.address}
+                    onChange={handleChange}
+                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                    required
+                />
+
+                <label className="text-white" htmlFor="ville">Ville:</label>
+                <input
+                    type="text"
+                    name={userData.city}
+                    value={userData.city}
+                    onChange={handleChange}
+                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                    required
+                />
+
+                <div className="flex justify-end space-x-4 mt-4">
+                    <Link to={`/user/${userData.id}`} className="text-[#FBD784] ml-4">
+                        <p>Annuler</p>
+                    </Link>
+                    <button
+                        type="submit"
+                        className="btn bg-blue-600 text-white border-none hover:bg-blue-700"
+                    >
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
         </div>
     );
 };

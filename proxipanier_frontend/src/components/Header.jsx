@@ -2,32 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
-    const [scrolling, setScrolling] = useState(false);
-    const [userId, setUserId] = useState(null);
+    const [id, setUserId] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
 
-    const handleScroll = () => {
-        setScrolling(window.scrollY > 0);
-    };
-
     const handleLogout = () => {
         localStorage.removeItem('token');
-        localStorage.removeItem('userId');
+        localStorage.removeItem('id');
         navigate('/login');
     };
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-
-        const storedUserId = localStorage.getItem('userId');
+        const storedUserId = localStorage.getItem('id');
+        console.log('User ID:', storedUserId);
         if (storedUserId) {
             setUserId(storedUserId);
         }
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
     }, []);
 
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
@@ -36,7 +26,7 @@ const Header = () => {
     }
 
     return (
-        <div className={`navbar top-0 left-0 w-full h-24 bg-[#0e2631] ${scrolling ? 'shadow-md' : ''}`}>
+        <div className="navbar bg-[#0e2631] w-full h-24">
             <div className="navbar-start">
                 <Link to="/" className="btn btn-ghost h-24">
                     <img
@@ -45,19 +35,33 @@ const Header = () => {
                         className="h-24 w-auto object-contain"
                     />
                 </Link>
-                {userId && (
-                    <Link to={`/user/${userId}`} className="text-[#FBD784] ml-4">
-                        <p>Mon compte</p>
-                    </Link>
-                )}
             </div>
+
             <div className="navbar-end">
-                <button
-                    className="btn border-[#FBD784] hover:text-[#0e2631] hover:bg-[#FBD784] bg-[#0e2631] text-[#FBD784]"
-                    onClick={handleLogout}
-                >
-                    Déconnexion
-                </button>
+                {/* Dropdown Menu for Desktop */}
+                <div className="dropdown hidden lg:block">
+                    <div tabIndex={0} className="btn btn-ghost">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M4 6h16M4 12h8m-8 6h16" />
+                        </svg>
+                    </div>
+                    <ul
+                        tabIndex={0}
+                        className="menu menu-md dropdown-content bg-[#0e2631] rounded-box z-[1] mt-3 w-40 right-0 p-2 shadow text-[#FBD784]">
+                        <li><Link to='/' className="link no-underline">Acceuil</Link></li>
+                        <li><Link to={`/user/${id}`} className="link no-underline">Mon compte</Link></li>
+                        <li><button onClick={handleLogout} className="link no-underline">Déconnexion</button></li>
+                    </ul>
+                </div>
             </div>
         </div>
     );

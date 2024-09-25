@@ -51,8 +51,6 @@ function ProducerList() {
 
     return (
         <div>
-            <div>
-            </div>
             <div className="flex flex-col items-center mt-20">
                 <div className="grid grid-cols-3 gap-4 w-4/5 rounded-lg overflow-hidden">
                     {users.map((user, index) => {

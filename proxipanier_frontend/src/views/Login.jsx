@@ -36,7 +36,7 @@ const Login = () => {
                 <div
                     className="w-full max-w-md md:w-2/5 p-8 rounded-lg shadow-lg"
                     style={{
-                        backgroundColor: '#0B1D26',
+                        backgroundColor: '#0e2631',
                         border: '1px solid #FBD784',
                         borderRadius: '10px',
                     }}
@@ -77,7 +77,7 @@ const Login = () => {
                                 }}
                             />
                         </label>
-                        <button type="submit" className="btn w-full" style={{ backgroundColor: '#FBD784', color: '#0B1D26' }}>Se connecter</button>
+                        <button type="submit" className="btn w-full" style={{ backgroundColor: '#FBD784', color: '#0e2631' }}>Se connecter</button>
                         {error && <p className="text-red-500 text-center">{error}</p>}
                     </form>
                     <p className="mt-4 text-center" style={{ color: '#FFFFFF' }}>

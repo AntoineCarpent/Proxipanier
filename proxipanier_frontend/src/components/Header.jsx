@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
     const [scrolling, setScrolling] = useState(false);
+    const [userId, setUserId] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -18,19 +19,24 @@ const Header = () => {
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
+
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
 
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
-
     if (isAuthPage) {
         return null;
     }
 
     return (
-        <div className={`navbar fixed top-0 left-0 w-full z-10 transition-colors duration-300 h-24 ${scrolling ? 'bg-[#0B1D26]' : 'bg-transparent'} text-white`}>
+        <div className={`navbar top-0 left-0 w-full h-24 bg-[#0e2631] ${scrolling ? 'shadow-md' : ''}`}>
             <div className="navbar-start">
                 <Link to="/" className="btn btn-ghost h-24">
                     <img
@@ -39,17 +45,15 @@ const Header = () => {
                         className="h-24 w-auto object-contain"
                     />
                 </Link>
-            </div>
-            <div className="navbar-center hidden lg:flex">
-                <ul className={`menu menu-horizontal px-1 ${scrolling ? 'text-[#ffffff]' : 'text-[#000000]'}`}>
-                    <li><Link to="/">Accueil</Link></li>
-                    <li><Link to="/create-transaction">Ajouter une transaction</Link></li>
-                    <li><Link to="/graph">Graphique</Link></li>
-                </ul>
+                {userId && (
+                    <Link to={`/user/${userId}`} className="text-[#FBD784] ml-4">
+                        <p>Mon compte</p>
+                    </Link>
+                )}
             </div>
             <div className="navbar-end">
                 <button
-                    className={`btn border transition duration-300 mr-5 ${scrolling ? 'border-[#FBD784] text-[#FBD784] hover:bg-[#FBD784] hover:text-[#0B1D26]' : 'text-white hover:bg-transparent hover:text-[#000000]'}`}
+                    className="btn border-[#FBD784] hover:text-[#0e2631] hover:bg-[#FBD784] bg-[#0e2631] text-[#FBD784]"
                     onClick={handleLogout}
                 >
                     Déconnexion

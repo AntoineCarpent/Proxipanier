@@ -28,8 +28,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function saleSheet()
+    public function salesSheets()
     {
-        return $this->hasMany(SalesSheets::class);
+        return $this->hasMany(SalesSheets::class, 'user_id');
     }
 }

@@ -12,7 +12,7 @@ function Register() {
     const [role, setRole] = useState(1);
     const [error, setError] = useState('');
 
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -42,11 +42,11 @@ function Register() {
                 style={{ backgroundImage: "url('/images/agriculture-850.jpg')" }}
             ></div>
 
-            <div className="flex items-center justify-center min-h-[70vh] mt-20" style={{ backgroundColor: '#0B1D26' }}>
+            <div className="flex items-center justify-center min-h-[70vh] mt-20" style={{ backgroundColor: '#0e2631' }}>
                 <div
                     className="w-full max-w-md md:w-2/5 p-8 rounded-lg shadow-lg"
                     style={{
-                        backgroundColor: '#0B1D26',
+                        backgroundColor: '#0e2631',
                         border: '1px solid #FBD784',
                         borderRadius: '10px',
                     }}
@@ -179,7 +179,7 @@ function Register() {
                                     borderColor: '#FBD784',
                                     borderRadius: '10px',
                                     backgroundColor: role === 2 ? '#FBD784' : 'transparent',
-                                    color: role === 2 ? '#0B1D26' : '#FFFFFF',
+                                    color: role === 2 ? '#0e2631' : '#FFFFFF',
                                     borderWidth: '2px',
                                     borderStyle: 'solid',
                                 }}
@@ -192,7 +192,7 @@ function Register() {
                             className="btn w-full"
                             style={{
                                 backgroundColor: '#FBD784',
-                                color: '#0B1D26',
+                                color: '#0e2631',
                                 border: '2px solid #FBD784',
                                 borderRadius: '10px',
                             }}

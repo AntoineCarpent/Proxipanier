@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SalesSheets;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -108,5 +109,9 @@ class SalesSheetsController extends Controller
             'status' => false,
             'message' => 'saleSheet not found',
         ], 404);
+    }
+    public function getUsersWithSales()
+    {
+        return User::with('salesSheets')->where('role_id', 2)->get();
     }
 }

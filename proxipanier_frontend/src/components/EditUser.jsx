@@ -1,145 +1,164 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import Picture from './Picture';
 
-const EditUser = ({ userId, onCancel, setUsers }) => {
-    const [userData, setUserData] = useState({
-        name: '',
-        firstname: '',
-        email: '',
-        password: '',
-        address: '',
-        city: '',
-    });
+const EditUser = () => {
     const { id } = useParams();
+    const [role, setRole] = useState('');
+    const [name, setName] = useState('');
+    const [firstname, setFirstname] = useState('');
+    const [email, setEmail] = useState('');
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        axios.get(`http://localhost:8000/api/users/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then(response => {
-                setUserData({
-                    name: response.data.name,
-                    firstname: response.data.firstname,
-                    email: response.data.email,
-                    password: '',
-                    address: response.data.address,
-                    city: response.data.city,
+        if (id) {
+            axios.get(`http://localhost:8000/api/users/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then(response => {
+                    const user = response.data;
+                    console.log('Transaction récupérée:', user);
+                    setRole(user.role || '');
+                    setName(user.name || '');
+                    setFirstname(user.firstname || '');
+                    setEmail(user.email || '');
+                    setAddress(user.address || '');
+                    setCity(user.city || '');
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération de la transaction:', error);
+                    setError('Erreur lors de la récupération des données.');
                 });
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération des informations de l\'utilisateur:', error);
-            });
+        }
     }, [id]);
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setUserData({
-            ...userData,
-            [name]: value,
-        });
-    };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
         const token = localStorage.getItem('token');
-        axios.put(`http://localhost:8000/api/users/${id}`, userData, {
+
+        axios.put(`http://localhost:8000/api/users/${id}`, {
+            role,
+            name,
+            firstname,
+            email,
+            address,
+            city,
+        }, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         })
             .then(response => {
-                console.log('Utilisateur mis à jour avec succès:', response.data);
-                setUsers(users => users.map(user => (user.id === userId ? response.data : user)));
-                onCancel();
+                console.log('Compte mise à jour avec succès:', response.data);
+                navigate(`/user/${id}`);
             })
             .catch(error => {
-                console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
+                setError(error.response?.data?.message || 'Une erreur est survenue lors de la mise à jour du compte.');
+                console.error('Erreur lors de la mise à jour du compte:', error.response?.data || error.message);
             });
     };
 
     return (
-        <div className="flex flex-col items-center mt-20">
-            <form
-                onSubmit={handleSubmit}
-                className="grid grid-cols-1 gap-4 w-3/5 rounded-lg overflow-hidden bg-transparent shadow-lg p-6 border-2 border-[#FBD784]"
-            >
-                <h3 className="text-[#FBD784] text-lg mb-4">Modifier l'utilisateur</h3>
+        <div>
+            <Picture />
+            <div className="flex flex-col items-center mt-20">
+                <form
+                    onSubmit={handleSubmit}
+                    className="grid grid-cols-1 gap-4 w-3/5 rounded-lg overflow-hidden bg-transparent shadow-lg p-6 border-2 border-[#FBD784]"
+                >
+                    <h3 className="text-[#FBD784] text-lg mb-4">Modifier vos coordonnées</h3>
 
-                <label className="text-white" htmlFor="nom">Nom</label>
-                <input
-                    type="text"
-                    name={userData.name}
-                    value={userData.name}
-                    onChange={handleChange}
-                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
-                    required
-                />
+                    <div className="flex justify-between">
+                        <button
+                            type="button"
+                            className={`btn ${role === 1 ? 'bg-[#FBD784] text-[#0B1D26]' : 'bg-transparent text-white'} border-[#FBD784]`}
+                            onClick={() => setRole(1)}
+                            style={{
+                                borderColor: '#FBD784',
+                                borderRadius: '10px',
+                                borderWidth: '2px',
+                                borderStyle: 'solid',
+                            }}
+                        >
+                            Consommateur
+                        </button>
+                        <button
+                            type="button"
+                            className={`btn ${role === 2 ? 'bg-[#FBD784] text-[#0B1D26]' : 'bg-transparent text-white'} border-[#FBD784]`}
+                            onClick={() => setRole(2)}
+                            style={{
+                                borderColor: '#FBD784',
+                                borderRadius: '10px',
+                                borderWidth: '2px',
+                                borderStyle: 'solid',
+                            }}
+                        >
+                            Producteur
+                        </button>
+                    </div>
 
-                <label className="text-white" htmlFor="prenom">Prénom:</label>
-                <input
-                    type="text"
-                    name="prenom"
-                    value={userData.firstname}
-                    onChange={handleChange}
-                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
-                    required
-                />
+                    <label className="text-white" htmlFor="name">Nom</label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                        required
+                    />
 
-                <label className="text-white" htmlFor="email">Email:</label>
-                <input
-                    type="email"
-                    name="email"
-                    value={userData.email}
-                    onChange={handleChange}
-                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
-                    required
-                />
+                    <label className="text-white" htmlFor="firstname">Prénom:</label>
+                    <input
+                        type="text"
+                        value={firstname}
+                        onChange={(e) => setFirstname(e.target.value)}
+                        className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                        required
+                    />
 
-                <label className="text-white" htmlFor="mot_de_passe">Mot de passe:</label>
-                <input
-                    type="password"
-                    name="mot_de_passe"
-                    value="******"
-                    onChange={handleChange}
-                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
-                    required
-                />
+                    <label className="text-white" htmlFor="email">Email:</label>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                        required
+                    />
 
-                <label className="text-white" htmlFor="adresse">Adresse:</label>
-                <input
-                    type="text"
-                    name="adresse"
-                    value={userData.address}
-                    onChange={handleChange}
-                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
-                    required
-                />
+                    <label className="text-white" htmlFor="address">Adresse:</label>
+                    <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                        required
+                    />
 
-                <label className="text-white" htmlFor="ville">Ville:</label>
-                <input
-                    type="text"
-                    name={userData.city}
-                    value={userData.city}
-                    onChange={handleChange}
-                    className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
-                    required
-                />
+                    <label className="text-white" htmlFor="city">Ville:</label>
+                    <input
+                        type="text"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                        required
+                    />
 
-                <div className="flex justify-end space-x-4 mt-4">
-                    <Link to={`/user/${userData.id}`} className="text-[#FBD784] ml-4">
-                        <p>Annuler</p>
-                    </Link>
-                    <button
-                        type="submit"
-                        className="btn bg-blue-600 text-white border-none hover:bg-blue-700"
-                    >
-                        Enregistrer
-                    </button>
-                </div>
-            </form>
+                    <div className="flex justify-end space-x-4 mt-4">
+                        <Link to={`/user/${id}`} className="btn bg-transparent hover:bg-[#FBD784] text-[#FBD784] hover:text-[#0e2631] border-[#FBD784]">
+                            <p>Annuler</p>
+                        </Link>
+                        {error && <p className="text-red-500">{error}</p>}
+                        <button type="submit" className="btn bg-transparent hover:bg-[#FBD784] text-[#FBD784] hover:text-[#0e2631] border-[#FBD784]">Mettre à jour le compte</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

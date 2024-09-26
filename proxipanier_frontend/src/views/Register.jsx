@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
     const [name, setName] = useState('');
@@ -14,26 +14,28 @@ function Register() {
 
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
-        try {
-            const response = await axios.post('http://localhost:8000/api/register', {
-                name,
-                firstname,
-                email,
-                password,
-                address,
-                city,
-                role,
+        axios.post('http://localhost:8000/api/register', {
+            name,
+            firstname,
+            email,
+            password,
+            address,
+            city,
+            role,
+        })
+            .then(response => {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('userId', response.data.user.id);
+                navigate('/');
+            })
+            .catch(error => {
+                setError(error.response?.data?.message || "Une erreur est survenue lors de l'enregistrement.");
             });
-            console.log('User registered:', response.data);
-
-            navigate('/login');
-        } catch (err) {
-            setError('Registration failed.');
-        }
     };
+
 
     return (
         <div>
@@ -210,4 +212,4 @@ function Register() {
     );
 }
 
-export default Register;
+    export default Register;

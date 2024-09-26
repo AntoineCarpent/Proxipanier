@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Header = () => {
     const [id, setUserId] = useState(null);
@@ -13,12 +14,24 @@ const Header = () => {
     };
 
     useEffect(() => {
-        const storedUserId = localStorage.getItem('id');
-        console.log('User ID:', storedUserId);
-        if (storedUserId) {
-            setUserId(storedUserId);
+        const token = localStorage.getItem('token');
+        
+        if (token) {
+            axios.get(`http://localhost:8000/api/user`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                const userId = response.data.id;
+                setUserId(userId);
+                localStorage.setItem('id', userId);
+            })
+            .catch(() => {
+                handleLogout();
+            });
         }
-    }, []);
+    }, [navigate]);
 
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
     if (isAuthPage) {
@@ -38,7 +51,6 @@ const Header = () => {
             </div>
 
             <div className="navbar-end">
-                {/* Dropdown Menu for Desktop */}
                 <div className="dropdown hidden lg:block">
                     <div tabIndex={0} className="btn btn-ghost">
                         <svg

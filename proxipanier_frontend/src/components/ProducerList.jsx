@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Picture from './Picture';
 
 function ProducerList() {
     const [users, setUsers] = useState([]);
@@ -51,6 +52,7 @@ function ProducerList() {
 
     return (
         <div>
+            <Picture />
             <div className="flex flex-col items-center mt-20">
                 <div className="grid grid-cols-3 gap-4 w-4/5 rounded-lg overflow-hidden">
                     {users.map((user, index) => {
@@ -73,7 +75,7 @@ function ProducerList() {
                                     <p style={{ color: '#FFFFFF' }}>
                                         Ventes actuel: {salesNames}
                                     </p>
-                                    <div className="card-actions justify-end">
+                                    <div className="card-actions justify-end items-center">
                                         <Link to={`/producers/${user.id}`} className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none">
                                             Voir plus
                                         </Link>

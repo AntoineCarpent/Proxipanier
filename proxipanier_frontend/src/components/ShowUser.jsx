@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Picture from './Picture';
+import SalesSheetsList from './SalesSheetsList';
 
 const ShowUser = () => {
     const { id } = useParams();
@@ -77,9 +78,17 @@ const ShowUser = () => {
                             {user.role === 1 ? 'Consommateur' : user.role === 2 ? 'Producteur' : 'Non spécifié'}
                         </p>
                         <p style={{ color: '#FFFFFF' }}><strong>Mail:</strong> {user.email || 'Non spécifiée'}</p>
-                        <p style={{ color: '#FFFFFF' }}><strong>Mot de passe:</strong> {user.password || 'Non spécifiée'}</p>
-                        <p style={{ color: '#FFFFFF' }}><strong>Adresse:</strong> {user.address || 'Non spécifiée'}</p>
+
+                        {user.role !== 1 && (
+                            <>
+                                <p style={{ color: '#FFFFFF' }}><strong>Téléphone:</strong> {user.phone_number || 'Non spécifiée'}</p>
+                                <p style={{ color: '#FFFFFF' }}><strong>Adresse:</strong> {user.address || 'Non spécifiée'}</p>
+                            </>
+                        )}
+
+                        <p style={{ color: '#FFFFFF' }}><strong>Code postal:</strong> {user.postal_code || 'Non spécifiée'}</p>
                         <p style={{ color: '#FFFFFF' }}><strong>Ville:</strong> {user.city || 'Non spécifiée'}</p>
+
                         <div className="card-actions justify-end mt-4">
                             <Link
                                 to={`/edit-user/${user.id}`}
@@ -97,6 +106,17 @@ const ShowUser = () => {
                         </div>
                     </div>
                 </div>
+                {user.role === 2 && (
+                    <div className="mt-6 w-4/5">
+                        <h2 className="text-[#FBD784] text-xl text-center mb-4">Fiches de ventes</h2>
+                        <div className="card-actions justify-start items-center">
+                            <Link to={`/`} className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none">
+                                Ajouter une fiche de vente
+                            </Link>
+                        </div>
+                        <SalesSheetsList userId={user.id} />
+                    </div>
+                )}
             </div>
         </div>
     );

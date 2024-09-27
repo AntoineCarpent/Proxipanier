@@ -18,7 +18,7 @@ function ProducerList() {
                         Authorization: `Bearer ${token}`,
                     },
                     params: {
-                        role: 2,
+                        role: 2, // Ensure we are fetching only role 2 users (producers)
                     },
                 }),
                 axios.get('http://localhost:8000/api/salesSheets', {
@@ -28,7 +28,9 @@ function ProducerList() {
                 }),
             ])
                 .then(([usersResponse, salesResponse]) => {
-                    setUsers(usersResponse.data);
+                    // Filter only producers with role 2, in case there are any inconsistencies
+                    const producers = usersResponse.data.filter(user => user.role === 2);
+                    setUsers(producers);
                     setSales(salesResponse.data);
                     setLoading(false);
                 })

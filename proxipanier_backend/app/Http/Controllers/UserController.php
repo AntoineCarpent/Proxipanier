@@ -28,7 +28,9 @@ class UserController extends Controller
             'firstname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => ['required', 'string', 'min:6'],
-            'address' => 'required|string|max:255',
+            'phone_number' => 'nullable|string|max:15',
+            'address' => 'nullable|string|max:255',
+            'postal_code' => 'required|string|max:10',
             'city' => 'required|string|max:255',
         ]);
 
@@ -37,17 +39,19 @@ class UserController extends Controller
                 'status' => false,
                 'message' => 'Validation error',
                 'errors' => $validator->errors(),
-            ], 401);
+            ], 422);
         }
 
         $user = User::create([
+            'role' => $request->role,
             'name' => $request->name,
             'firstname' => $request->firstname,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'phone_number' => $request->phone_number,
             'address' => $request->address,
+            'postal_code' => $request->postal_code,
             'city' => $request->city,
-            'role' => $request->role,
         ]);
 
         $token = $user->createToken("API TOKEN")->plainTextToken;
@@ -56,9 +60,9 @@ class UserController extends Controller
             'status' => true,
             'message' => 'User Created Successfully',
             'token' => $token,
+            'user' => $user
         ], 200);
     }
-
 
     public function login(Request $request)
     {
@@ -126,7 +130,9 @@ class UserController extends Controller
             'firstname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => ['nullable', 'string', 'min:6'],
-            'address' => 'required|string|max:255',
+            'phone_number' => 'nullable|string|max:15',
+            'address' => 'string|max:255',
+            'postal_code' => 'nullable|required|string|max:10',
             'city' => 'required|string|max:255',
         ]);
 
@@ -151,6 +157,7 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
+
 
     public function logout(Request $request)
     {

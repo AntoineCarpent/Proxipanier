@@ -9,7 +9,9 @@ const EditUser = () => {
     const [name, setName] = useState('');
     const [firstname, setFirstname] = useState('');
     const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [address, setAddress] = useState('');
+    const [postalCode, setPostalCode] = useState('');
     const [city, setCity] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -29,7 +31,9 @@ const EditUser = () => {
                     setName(user.name || '');
                     setFirstname(user.firstname || '');
                     setEmail(user.email || '');
+                    setPhoneNumber(user.phone_number || '');
                     setAddress(user.address || '');
+                    setPostalCode(user.postal_code || '');
                     setCity(user.city || '');
                 })
                 .catch(error => {
@@ -49,7 +53,9 @@ const EditUser = () => {
             name,
             firstname,
             email,
+            phone_number: phoneNumber,
             address,
+            postal_code: postalCode,
             city,
         }, {
             headers: {
@@ -131,15 +137,44 @@ const EditUser = () => {
                         className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
                         required
                     />
+                    {role === 2 && (
+                        <>
+                            <label className="text-white" htmlFor="city">Téléphone:</label>
+                            <input
+                                type="text"
+                                className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                                placeholder="Téléphone"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                required
+                            />
+                        </>
+                    )}
 
-                    <label className="text-white" htmlFor="address">Adresse:</label>
+                    {role === 2 && (
+                        <>
+                            <label className="text-white" htmlFor="city">Adresse:</label>
+                            <input
+                                type="text"
+                                className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
+                                placeholder="Adresse"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                required
+                            />
+
+                        </>
+                    )}
+
+                    <label className="text-white" htmlFor="city">Code postale:</label>
                     <input
                         type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
+                        value={postalCode}
+                        onChange={(e) => setPostalCode(e.target.value)}
                         className="input border-[#FBD784] bg-[#0e2631] placeholder:text-white"
                         required
                     />
+
 
                     <label className="text-white" htmlFor="city">Ville:</label>
                     <input

@@ -15,14 +15,28 @@ const Login = () => {
             email,
             password
         })
-            .then(response => {
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('userId', response.data.user.id);
-                navigate('/');
-            })
-            .catch(error => {
-                setError(error.response?.data?.message || 'Une erreur est survenue lors de la connexion.');
-            });
+        .then(response => {
+            const { token, user } = response.data;
+            localStorage.setItem('token', token);
+            
+            if (user) {
+                const userId = user.id;
+                const userRole = user.role;
+                localStorage.setItem('userId', userId);
+
+                if (userRole === 1) {
+                    navigate('/');
+                } else if (userRole === 2) {
+                    navigate(`/user/${userId}`);
+                }
+            } else {
+                console.error('User data is undefined:', response.data);
+            }
+        })
+        .catch(error => {
+            const errorMessage = error.response?.data?.message || 'Une erreur est survenue lors de la connexion.';
+            setError(errorMessage);
+        });
     };
 
     return (

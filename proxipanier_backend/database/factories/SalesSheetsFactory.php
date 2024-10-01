@@ -23,7 +23,9 @@ class SalesSheetsFactory extends Factory
             'date' => fake()->date(),
             'start' => fake()->time(),
             'end' => fake()->time(),
+            'price' => fake()->randomFloat(2, 1, 10),
             'address' => fake()->streetAddress(),
+            'postal_code' => 63000,
             'city' => fake()->city(),
             'description' => fake()->sentence(),
         ];

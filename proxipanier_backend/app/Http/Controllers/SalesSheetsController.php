@@ -23,8 +23,9 @@ class SalesSheetsController extends Controller
             'date' => 'required|date_format:Y-m-d',
             'start' => 'required|date_format:H:i',
             'end' => 'required|date_format:H:i',
+            'price' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
+            'postal_code' => 'required|required|string|max:10',
             'description' => 'nullable|string',
         ]);
 
@@ -44,7 +45,9 @@ class SalesSheetsController extends Controller
             'date' => $request->date,
             'start' => $request->start,
             'end' => $request->end,
+            'price' => $request->price,
             'address' => $request->address,
+            'postal_code' => $request->postal_code,
             'city' => $request->city,
             'description' => $request->description,
         ]);
@@ -70,8 +73,10 @@ class SalesSheetsController extends Controller
             'date' => 'required|date_format:Y-m-d',
             'start' => 'required|date_format:H:i',
             'end' => 'required|date_format:H:i',
+            'price' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
+            'postal_code' => 'required|required|string|max:10',
             'description' => 'nullable|string',
         ]);
 

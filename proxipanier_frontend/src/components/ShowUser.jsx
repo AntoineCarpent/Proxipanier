@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Picture from './Picture';
-import SalesSheetsList from './SalesSheetsList';
+import ProducerList from './ProducerList';
 
 const ShowUser = () => {
     const { id } = useParams();
@@ -13,6 +13,7 @@ const ShowUser = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        const id = localStorage.getItem('id');
         if (token) {
             axios.get(`http://localhost:8000/api/users/${id}`, {
                 headers: {
@@ -106,17 +107,15 @@ const ShowUser = () => {
                         </div>
                     </div>
                 </div>
-                {user.role === 2 && (
+                {user.role === 1 && user.postal_code && (
                     <div className="mt-6 w-4/5">
-                        <h2 className="text-[#FBD784] text-xl text-center mb-4">Fiches de ventes</h2>
+                        <h2 className="text-[#FBD784] text-xl text-center mb-4">Les producteurs proche de chez vous:</h2>
                         <div className="card-actions justify-start items-center">
-                            <Link to={`/`} className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none">
-                                Ajouter une fiche de vente
-                            </Link>
                         </div>
-                        <SalesSheetsList userId={user.id} />
+                        <ProducerList postalCode={user.postal_code} />
                     </div>
                 )}
+
             </div>
         </div>
     );

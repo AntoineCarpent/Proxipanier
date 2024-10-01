@@ -17,16 +17,16 @@ class UserFactory extends Factory
 {
     return [
         'role' => 1,
-        'name' => $this->faker->name,
-        'firstname' => $this->faker->firstName,
-        'email' => $this->faker->unique()->safeEmail,
+        'name' => "Nom",
+        'firstname' => "Prénom",
+        'email' => "email@example.com",
         'email_verified_at' => now(),
-        'password' => static::$password ??= Hash::make('password'),
+        'password' => static::$password ??= Hash::make('azerty63'),
         'remember_token' => Str::random(10),
         'phone_number' => '',
         'address' => '',
-        'postal_code' => $this->faker->postcode,
-        'city' => $this->faker->city,
+        'postal_code' => 63000,
+        'city' => "Clermont Ferrand",
     ];
 }
 

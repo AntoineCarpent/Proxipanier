@@ -15,7 +15,9 @@ class SalesSheets extends Model
         'date',
         'start',
         'end',
+        'price',
         'address',
+        'postal_code',
         'city',
         'description'
     ];

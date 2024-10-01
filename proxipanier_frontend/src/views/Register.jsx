@@ -39,7 +39,7 @@ function Register() {
                     if (role === 1) {
                         navigate('/');
                     } else if (role === 2) {
-                        navigate(`/user/${userId}`);
+                        navigate(`/producer`);
                     }
                 } else {
                     console.error('User data is undefined:', response.data);

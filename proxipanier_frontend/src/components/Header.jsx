@@ -1,11 +1,12 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const Header = () => {
-    const [id, setUserId] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -15,27 +16,38 @@ const Header = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        
-        if (token) {
-            axios.get(`http://localhost:8000/api/user`, {
+        const id = localStorage.getItem('id');
+        const role = localStorage.getItem('role');
+
+        console.log('Token:', token); // Log du token
+        console.log('User ID:', id); // Log de l'ID utilisateur
+        console.log('User Role:', role); // Log du role utilisateur
+
+        if (token && id) {
+            axios.get(`http://localhost:8000/api/users/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            .then(response => {
-                const userId = response.data.id;
-                setUserId(userId);
-                localStorage.setItem('id', userId);
-            })
-            .catch(() => {
-                handleLogout();
-            });
+                .then(response => {
+                    console.log("User data from API:", response.data); // Log des données utilisateur
+                    setUser(response.data);
+                })
+                .catch((error) => {
+                    console.error("Error fetching user data:", error.response); // Log de l'erreur
+                    handleLogout();
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        } else {
+            setLoading(false);
         }
     }, [navigate]);
 
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
-    if (isAuthPage) {
-        return null;
+    if (isAuthPage || loading) {
+        return null; // Ne rien afficher pendant le chargement ou sur les pages d'authentification
     }
 
     return (
@@ -69,8 +81,22 @@ const Header = () => {
                     <ul
                         tabIndex={0}
                         className="menu menu-md dropdown-content bg-[#0e2631] rounded-box z-[1] mt-3 w-40 right-0 p-2 shadow text-[#FBD784]">
-                        <li><Link to='/' className="link no-underline">Acceuil</Link></li>
-                        <li><Link to={`/user/${id}`} className="link no-underline">Mon compte</Link></li>
+                        <li><Link to='/' className="link no-underline">Accueil</Link></li>
+                        <li>
+                            {user ? (
+                                <>
+                                    {user.role === 1 ? (
+                                        <Link to="/user" className="link no-underline">Mon compte</Link>
+                                    ) : user.role === 2 ? (
+                                        <Link to={`/producer/${user.id}`} className="link no-underline">Mon compte producteur</Link>
+                                    ) : (
+                                        <span>Rôle non spécifié</span>
+                                    )}
+                                </>
+                            ) : (
+                                <span>Utilisateur non trouvé</span>
+                            )}
+                        </li>
                         <li><button onClick={handleLogout} className="link no-underline">Déconnexion</button></li>
                     </ul>
                 </div>

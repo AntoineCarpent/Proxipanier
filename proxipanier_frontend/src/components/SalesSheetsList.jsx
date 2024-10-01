@@ -1,56 +1,48 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
-function SalesSheetsList() {
-    const { id } = useParams();
+const SalesSheetsList = ({ userId }) => {
     const [salesSheets, setSalesSheets] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            axios.get(`http://localhost:8000/api/salesSheets/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then(response => {
-                    console.log('Sales sheets retrieved:', response.data);
-                    // Check if the data is an array
-                    const data = response.data.salesSheets || []; // Adjust if necessary
-                    if (Array.isArray(data)) {
-                        const sortedSalesSheets = data.sort((a, b) => new Date(a.date) - new Date(b.date));
-                        setSalesSheets(sortedSalesSheets);
-                    } else {
-                        setError('Sales sheets data is not an array');
-                    }
-                    setLoading(false);
-                })
-                .catch(error => {
-                    setError('Failed to fetch sales sheets');
-                    console.error('Error fetching sales sheets:', error.response ? error.response.data : error.message);
-                    setLoading(false);
+        const fetchSalesSheets = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`http://localhost:8000/api/salesSheets`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    params: {
+                        user_id: userId,
+                    },
                 });
-        } else {
-            setError('No authentication token found');
-            setLoading(false);
-        }
-    }, [id]);
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+                setSalesSheets(response.data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des fiches de vente:', error);
+                setError('Erreur lors de la récupération des fiches de vente.');
+            }
+        };
+
+        if (userId) {
+            fetchSalesSheets();
+        }
+    }, [userId]);
 
     if (error) {
-        return <p>{error}</p>;
+        return <div>{error}</div>;
+    }
+
+    if (salesSheets.length === 0) {
+        return <div>Aucune fiche de vente disponible pour cet utilisateur.</div>;
     }
 
     return (
         <div>
-            <div>
-            </div>
+            {salesSheets.length === 0 ? (
+                <p className="text-center text-white">Vous n'avez aucune vente en cours</p>
+            ) : (
             <div className="flex flex-col items-center mt-20">
                 <div className="grid grid-cols-1 gap-6 w-3/4">
                     {salesSheets.map((sheet) => (
@@ -75,6 +67,7 @@ function SalesSheetsList() {
                     ))}
                 </div>
             </div>
+            )}
         </div>
     );
 }

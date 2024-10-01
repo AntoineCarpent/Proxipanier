@@ -3,11 +3,13 @@ import './style/App.css';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
-import UserProfile from './components/ShowUser';
+import ShowUser from './components/ShowUser';
+import ShowProducer from './components/ShowProducer';
 import EditUser from './components/EditUser';
 import Register from './views/Register';
 import Login from './views/Login';
 import Home from './views/Home';
+import AddSalesSheets from './components/AddSalesSheets';
 
 function App() {
   return (
@@ -18,8 +20,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/user/:id" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+        <Route path="/user" element={<ProtectedRoute><ShowUser /></ProtectedRoute>} />
+        <Route path="/producer/:id" element={<ProtectedRoute><ShowProducer /></ProtectedRoute>} />
         <Route path="/edit-user/:id" element={<ProtectedRoute><EditUser /></ProtectedRoute>} />
+        <Route path="/add-sale-sheet/:id" element={<ProtectedRoute><AddSalesSheets /></ProtectedRoute>} />
       </Routes>
       <Footer />
     </Router>

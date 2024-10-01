@@ -9,6 +9,6 @@ class SalesSheetsSeeder extends Seeder
 {
     public function run(): void
     {
-        SalesSheets::factory(3)->create();
+        SalesSheets::factory(1)->create();
     }
 }

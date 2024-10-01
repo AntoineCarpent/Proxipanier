@@ -18,7 +18,9 @@ return new class extends Migration
             $table->date('date');
             $table->time('start');
             $table->time('end');
+            $table->string('price');
             $table->string('address');
+            $table->string('postal_code');
             $table->string('city');
             $table->text('description')->nullable();
             $table->timestamps();

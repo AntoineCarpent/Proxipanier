@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('postal_code');
             $table->string('city');
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

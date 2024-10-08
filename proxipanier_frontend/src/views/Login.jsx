@@ -16,20 +16,17 @@ const Login = () => {
             password
         })
         .then(response => {
-            // Assurez-vous que la réponse a bien la structure attendue
             if (response.data.token && response.data.user) {
                 const { token, user } = response.data;
 
-                // Stockage des informations dans le localStorage
                 localStorage.setItem('token', token);
-                localStorage.setItem('id', user.id); // Utiliser 'id' pour correspondre à votre API
-                localStorage.setItem('role', user.role); // Optionnel, si vous voulez le rôle
+                localStorage.setItem('id', user.id);
+                localStorage.setItem('role', user.role);
 
-                // Redirection en fonction du rôle
                 if (user.role === 1) {
-                    navigate('/'); // Redirection vers l'accueil pour le rôle 1
+                    navigate('/');
                 } else if (user.role === 2) {
-                    navigate('/producer'); // Redirection vers la page du producteur pour le rôle 2
+                    navigate(`/producer/${user.id}`);
                 }
             } else {
                 console.error('User data is undefined:', response.data);

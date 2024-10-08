@@ -10,6 +10,7 @@ import Register from './views/Register';
 import Login from './views/Login';
 import Home from './views/Home';
 import AddSalesSheets from './components/AddSalesSheets';
+import EditSalesSheets from './components/EditSalesSheets';
 
 function App() {
   return (
@@ -20,10 +21,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/user" element={<ProtectedRoute><ShowUser /></ProtectedRoute>} />
+        <Route path="/user/:id" element={<ProtectedRoute><ShowUser /></ProtectedRoute>} />
         <Route path="/producer/:id" element={<ProtectedRoute><ShowProducer /></ProtectedRoute>} />
         <Route path="/edit-user/:id" element={<ProtectedRoute><EditUser /></ProtectedRoute>} />
         <Route path="/add-sale-sheet/:id" element={<ProtectedRoute><AddSalesSheets /></ProtectedRoute>} />
+        <Route path="/edit-sale-sheet/:id" element={<ProtectedRoute><EditSalesSheets /></ProtectedRoute>} />
       </Routes>
       <Footer />
     </Router>

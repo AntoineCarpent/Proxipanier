@@ -1,9 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import moment from 'moment';
 import Picture from './Picture';
 
-const AddSalesSheets = () => {
+const EditSalesSheets = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [productName, setProductName] = useState('');
@@ -18,70 +19,65 @@ const AddSalesSheets = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token');
+
+        const fetchSalesSheet = async () => {
             if (id && token) {
-                try {
-                    const response = await axios.get(`http://localhost:8000/api/users/${id}`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-                    const user = response.data;
-                    console.log(user);
-                } catch (error) {
-                    console.error('Erreur lors de la récupération de l\'id:', error);
-                    setError('Erreur lors de la récupération des données.');
-                }
+                const response = await axios.get(`http://localhost:8000/api/salesSheets/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const sheet = response.data;
+
+                setProductName(sheet.product_name);
+                setDate(sheet.date);
+                setStart(sheet.start);
+                setEnd(sheet.end);
+                setPrice(sheet.price);
+                setAddress(sheet.address);
+                setPostalCode(sheet.postal_code);
+                setCity(sheet.city);
+                setDescription(sheet.description);
             }
         };
-        fetchUserData();
+
+        fetchSalesSheet();
     }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        
         const token = localStorage.getItem('token');
-
-        try {
-            const response = await axios.post(
-                'http://localhost:8000/api/salesSheets',
-                {
-                    product_name: productName,
-                    date,
-                    start,
-                    end,
-                    price,
-                    address,
-                    postal_code: postalCode,
-                    city,
-                    description,
+    
+        const formattedStart = moment(start, "HH:mm").format("HH:mm");
+        const formattedEnd = moment(end, "HH:mm").format("HH:mm");
+    
+        const response = await axios.put(
+            `http://localhost:8000/api/salesSheets/${id}`,
+            {
+                product_name: productName,
+                date,
+                start: formattedStart, // Utilise les heures formatées ici
+                end: formattedEnd,
+                price,
+                address,
+                postal_code: postalCode,
+                city,
+                description,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
                 },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            console.log(response.data);
-
-            setProductName('');
-            setDate('');
-            setStart('');
-            setEnd('');
-            setPrice('');
-            setAddress('');
-            setPostalCode('');
-            setCity('');
-            setDescription('');
-
-            navigate(`/producer/${id}`);
-        } catch (error) {
-            console.error('Error adding sales sheet:', error);
-        }
+            }
+        );
+    
+        navigate(`/producer/${id}`);
     };
-
+    
+    
     return (
         <div>
             <Picture />
@@ -95,8 +91,10 @@ const AddSalesSheets = () => {
                     }}
                 >
                     <h1 className="text-2xl font-bold text-center mb-6" style={{ color: '#FFFFFF' }}>
-                        Créer une Fiche de Vente
+                        Modifier la Fiche de Vente
                     </h1>
+
+                    {error && <p className="text-red-500">{error}</p>}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <label className="flex items-center gap-2">
@@ -140,6 +138,7 @@ const AddSalesSheets = () => {
                                 value={start}
                                 onChange={(e) => setStart(e.target.value)}
                                 required
+                                pattern="[0-9]{2}:[0-9]{2}"
                                 style={{
                                     color: '#FFFFFF',
                                     borderColor: '#FBD784',
@@ -157,6 +156,7 @@ const AddSalesSheets = () => {
                                 value={end}
                                 onChange={(e) => setEnd(e.target.value)}
                                 required
+                                pattern="[0-9]{2}:[0-9]{2}"
                                 style={{
                                     color: '#FFFFFF',
                                     borderColor: '#FBD784',
@@ -265,7 +265,7 @@ const AddSalesSheets = () => {
                                 borderRadius: '10px',
                             }}
                         >
-                            Créer la fiche
+                            Mettre à jour la fiche
                         </button>
                     </form>
                 </div>
@@ -274,4 +274,4 @@ const AddSalesSheets = () => {
     );
 };
 
-export default AddSalesSheets;
+export default EditSalesSheets;

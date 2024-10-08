@@ -19,10 +19,6 @@ const Header = () => {
         const id = localStorage.getItem('id');
         const role = localStorage.getItem('role');
 
-        console.log('Token:', token); // Log du token
-        console.log('User ID:', id); // Log de l'ID utilisateur
-        console.log('User Role:', role); // Log du role utilisateur
-
         if (token && id) {
             axios.get(`http://localhost:8000/api/users/${id}`, {
                 headers: {
@@ -30,11 +26,10 @@ const Header = () => {
                 }
             })
                 .then(response => {
-                    console.log("User data from API:", response.data); // Log des données utilisateur
                     setUser(response.data);
                 })
                 .catch((error) => {
-                    console.error("Error fetching user data:", error.response); // Log de l'erreur
+                    console.error("Error fetching user data:", error.response);
                     handleLogout();
                 })
                 .finally(() => {
@@ -47,7 +42,7 @@ const Header = () => {
 
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
     if (isAuthPage || loading) {
-        return null; // Ne rien afficher pendant le chargement ou sur les pages d'authentification
+        return null;
     }
 
     return (
@@ -86,9 +81,9 @@ const Header = () => {
                             {user ? (
                                 <>
                                     {user.role === 1 ? (
-                                        <Link to="/user" className="link no-underline">Mon compte</Link>
+                                        <Link to={`/user/${user.id}`} className="link no-underline">Mon compte</Link>
                                     ) : user.role === 2 ? (
-                                        <Link to={`/producer/${user.id}`} className="link no-underline">Mon compte producteur</Link>
+                                        <Link to={`/producer/${user.id}`} className="link no-underline">Mon compte</Link>
                                     ) : (
                                         <span>Rôle non spécifié</span>
                                     )}

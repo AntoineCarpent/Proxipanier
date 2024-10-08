@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
+    const [role, setRole] = useState(1);
     const [name, setName] = useState('');
     const [firstname, setFirstname] = useState('');
     const [email, setEmail] = useState('');
@@ -11,45 +12,79 @@ function Register() {
     const [city, setCity] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [postalCode, setPostalCode] = useState('');
-    const [role, setRole] = useState(1);
+    const [latitude, setLatitude] = useState('');
+    const [longitude, setLongitude] = useState('');
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        axios.post('http://localhost:8000/api/register', {
-            name,
-            firstname,
-            email,
-            password,
-            address,
-            city,
-            phone_number: phoneNumber,
-            postal_code: postalCode,
-            role,
-        })
-            .then(response => {
-                localStorage.setItem('token', response.data.token);
-                if (response.data.user) {
-                    const userId = response.data.user.id;
-                    localStorage.setItem('userId', userId);
+        const coordinates = await getCoordinates(postalCode, city);
+        if (coordinates) {
+            setLatitude(coordinates.lat);
+            setLongitude(coordinates.lon);
 
-                    if (role === 1) {
-                        navigate('/');
-                    } else if (role === 2) {
-                        navigate(`/producer`);
-                    }
-                } else {
-                    console.error('User data is undefined:', response.data);
-                }
+            axios.post('http://localhost:8000/api/register', {
+                name,
+                firstname,
+                email,
+                password,
+                address,
+                city,
+                phone_number: phoneNumber,
+                postal_code: postalCode,
+                role,
+                latitude: coordinates.lat,
+                longitude: coordinates.lon,
             })
-            .catch(error => {
-                setError(error.response?.data?.message || "Une erreur est survenue lors de l'enregistrement.");
-            });
+                .then(response => {
+                    if (response.data.token && response.data.user) {
+                        const { token, user } = response.data;
+
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('id', user.id);
+                        localStorage.setItem('role', user.role);
+
+                        if (user.role === 1) {
+                            navigate('/');
+                        } else if (user.role === 2) {
+                            navigate(`/producer/${user.id}`);
+                        }
+                    } else {
+                        console.error('User data is undefined:', response.data);
+                        setError('Les données utilisateur sont manquantes.');
+                    }
+                })
+                .catch(error => {
+                    setError(error.response?.data?.message || "Une erreur est survenue lors de l'enregistrement.");
+                });
+        } else {
+            console.error('Les coordonnées ne sont pas disponibles.');
+            setError('Les coordonnées ne peuvent pas être récupérées.');
+        }
     };
 
+    const getCoordinates = async (postalCode) => {
+        const baseURL = "https://nominatim.openstreetmap.org/search";
+        const address = `${postalCode}, France`;
+        const url = `${baseURL}?q=${encodeURIComponent(address)}&format=json&addressdetails=1`;
+
+        try {
+            const response = await axios.get(url);
+            if (response.data && response.data.length > 0) {
+                const { lat, lon } = response.data[0];
+                return { lat, lon };
+            } else {
+                console.error("Aucune correspondance trouvée.");
+                return null;
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération des coordonnées:", error);
+            throw error;
+        }
+    };
 
     return (
         <div>
@@ -69,7 +104,6 @@ function Register() {
                 >
                     <h1 className="text-2xl font-bold text-center mb-6" style={{ color: '#FFFFFF' }}>Inscription</h1>
 
-                    {/* Boutons Consommateur et Producteur déplacés ici */}
                     <div className="flex justify-between mb-6">
                         <button
                             type="button"
@@ -173,7 +207,6 @@ function Register() {
                             />
                         </label>
 
-                        {/* Conditionally render phone number and address if role is 'Producteur' */}
                         {role === 2 && (
                             <>
                                 <label className="flex items-center gap-2">
@@ -268,8 +301,6 @@ function Register() {
             </div>
         </div>
     );
-
-
 }
 
 export default Register;

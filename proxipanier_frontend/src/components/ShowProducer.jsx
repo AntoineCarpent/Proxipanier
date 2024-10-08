@@ -1,16 +1,18 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Picture from './Picture';
 import SalesSheetsList from './SalesSheetsList';
 
 const ShowProducer = () => {
-    const { id } = useParams(); // ID de l'utilisateur affiché
+    const { id } = useParams();
     const [producer, setProducer] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userRole, setUserRole] = useState(null);
     const [userId, setUserId] = useState(null);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -54,7 +56,7 @@ const ShowProducer = () => {
         })
             .then(() => {
                 alert('Utilisateur supprimé avec succès.');
-                // Redirection ou autre action après suppression
+                navigate("/register")
             })
             .catch(error => {
                 console.error('Erreur lors de la suppression de l\'utilisateur:', error.response || error.message);
@@ -107,18 +109,19 @@ const ShowProducer = () => {
                                         Supprimer
                                     </button>
                                 </div>
-
-                                <div className="mt-6 w-full">
-                                    <div className="card-actions justify-start items-center">
-                                        
-                                    </div>
-                                </div>
                             </div>
                         )}
 
                         <div className="mt-6 w-full">
                             <h2 className="text-[#FBD784] text-xl text-center mb-4">Fiches de ventes</h2>
-                            <SalesSheetsList userId={producer.id} />
+                            {userRole === '2' && userId === String(producer.id) && (
+                                <div className="card-actions justify-start items-center">
+                                    <Link to={`/add-sale-sheet/${producer.id}`} className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none">
+                                        Ajouter une fiche de vente
+                                    </Link>
+                                </div>
+                            )}
+                            <SalesSheetsList producerId={producer.id} />
                         </div>
                     </div>
                 </div>

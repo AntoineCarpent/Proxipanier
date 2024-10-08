@@ -23,15 +23,17 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'role' => 'required|integer|in:1,2',
-            'name' => 'required|string|max:255',
-            'firstname' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => ['required', 'string', 'min:6'],
-            'phone_number' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:255',
-            'postal_code' => 'required|string|max:10',
-            'city' => 'required|string|max:255',
+            'name' => 'required|string',
+            'firstname' => 'required|string',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:6',
+            'address' => 'nullable|string',
+            'city' => 'required|string',
+            'phone_number' => 'nullable|string',
+            'postal_code' => 'required|string',
+            'role' => 'required|integer',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -43,15 +45,17 @@ class UserController extends Controller
         }
 
         $user = User::create([
-            'role' => $request->role,
             'name' => $request->name,
             'firstname' => $request->firstname,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'phone_number' => $request->phone_number,
+            'password' => Hash::make($request->password),
             'address' => $request->address,
-            'postal_code' => $request->postal_code,
             'city' => $request->city,
+            'phone_number' => $request->phone_number,
+            'postal_code' => $request->postal_code,
+            'role' => $request->role,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
         $token = $user->createToken("API TOKEN")->plainTextToken;
@@ -131,7 +135,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => ['nullable', 'string', 'min:6'],
             'phone_number' => 'nullable|string|max:15',
-            'address' => 'string|max:255',
+            'address' => 'nullable|string|max:255',
             'postal_code' => 'nullable|required|string|max:10',
             'city' => 'required|string|max:255',
         ]);

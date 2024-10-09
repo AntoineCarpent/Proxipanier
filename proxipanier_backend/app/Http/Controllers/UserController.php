@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Favorite;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -208,5 +209,42 @@ class UserController extends Controller
             'status' => false,
             'message' => 'User not found',
         ], 404);
+    }
+    public function getFavorites()
+    {
+        $user = Auth::user();
+        return response()->json($user->favorites()->with('producer')->get());
+    }
+
+    // Ajouter un producteur aux favoris
+    public function addFavorite(Request $request)
+    {
+        \Log::info('Received request to add favorite:', $request->all()); // Ajoutez cette ligne pour le débogage
+    
+        $request->validate([
+            'producerId' => 'required|exists:users,id',
+        ]);
+    
+        $user = Auth::user();
+        $favorite = Favorite::firstOrCreate([
+            'user_id' => $user->id,
+            'producer_id' => $request->producerId,
+        ]);
+    
+        return response()->json($favorite);
+    }
+
+    // Retirer un producteur des favoris
+    public function removeFavorite($producerId)
+    {
+        $user = Auth::user();
+        $favorite = Favorite::where('user_id', $user->id)->where('producer_id', $producerId)->first();
+
+        if ($favorite) {
+            $favorite->delete();
+            return response()->json(['message' => 'Favorite removed successfully.']);
+        }
+
+        return response()->json(['message' => 'Favorite not found.'], 404);
     }
 }

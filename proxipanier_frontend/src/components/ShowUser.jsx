@@ -2,7 +2,6 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Picture from './Picture';
-import ProducerList from './ProducerList';
 
 const ShowUser = () => {
     const { id } = useParams();
@@ -64,7 +63,6 @@ const ShowUser = () => {
     if (error) {
         return <p>{error}</p>;
     }
-
     return (
         <div>
             <Picture />
@@ -109,10 +107,9 @@ const ShowUser = () => {
                 </div>
                 {user.role === 1 && user.postal_code && (
                     <div className="mt-6 w-4/5">
-                        <h2 className="text-[#FBD784] text-xl text-center mb-4">Les producteurs proche de chez vous:</h2>
+                        <h2 className="text-[#FBD784] text-xl text-center mb-4">Vos producteurs favoris</h2>
                         <div className="card-actions justify-start items-center">
                         </div>
-                        <ProducerList postalCode={user.postal_code} />
                     </div>
                 )}
 

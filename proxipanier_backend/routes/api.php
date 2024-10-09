@@ -21,10 +21,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     Route::post('/logout', [UserController::class, 'logout']);
 
+    Route::get('user/favorites', [UserController::class, 'getFavorites']);
+    Route::post('user/favorites', [UserController::class, 'addFavorite']);
+    Route::delete('user/favorites/{producerId}', [UserController::class, 'removeFavorite']);
+
     Route::get('/salesSheets', [SalesSheetsController::class, 'index']);
     Route::post('/salesSheets', [SalesSheetsController::class, 'store']);
     Route::get('/salesSheets/{id}', [SalesSheetsController::class, 'show']);
     Route::put('/salesSheets/{id}', [SalesSheetsController::class, 'update']);
     Route::delete('/salesSheets/{id}', [SalesSheetsController::class, 'destroy']);
-
 });

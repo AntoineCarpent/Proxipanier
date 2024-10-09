@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHouse } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -76,14 +80,17 @@ const Header = () => {
                     <ul
                         tabIndex={0}
                         className="menu menu-md dropdown-content bg-[#0e2631] rounded-box z-[1] mt-3 w-40 right-0 p-2 shadow text-[#FBD784]">
-                        <li><Link to='/' className="link no-underline">Accueil</Link></li>
+                        <li>  <Link to='/' className="link no-underline">
+                            <FontAwesomeIcon icon={faHouse} /> Accueil
+                        </Link>
+                        </li>
                         <li>
                             {user ? (
                                 <>
                                     {user.role === 1 ? (
-                                        <Link to={`/user/${user.id}`} className="link no-underline">Mon compte</Link>
+                                        <Link to={`/user/${user.id}`} className="link no-underline"><FontAwesomeIcon icon={faUser} />Mon compte</Link>
                                     ) : user.role === 2 ? (
-                                        <Link to={`/producer/${user.id}`} className="link no-underline">Mon compte</Link>
+                                        <Link to={`/producer/${user.id}`} className="link no-underline"><FontAwesomeIcon icon={faUser} />Mon compte</Link>
                                     ) : (
                                         <span>Rôle non spécifié</span>
                                     )}
@@ -92,7 +99,7 @@ const Header = () => {
                                 <span>Utilisateur non trouvé</span>
                             )}
                         </li>
-                        <li><button onClick={handleLogout} className="link no-underline">Déconnexion</button></li>
+                        <li><button onClick={handleLogout} className="link no-underline"><FontAwesomeIcon icon={faRightFromBracket} />Déconnexion</button></li>
                     </ul>
                 </div>
             </div>

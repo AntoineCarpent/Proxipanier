@@ -1,6 +1,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 
 function ProducerList() {
     const [users, setUsers] = useState([]);
@@ -8,10 +11,13 @@ function ProducerList() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
-    const [distanceLimit, setDistanceLimit] = useState(10);// Limite de distance par défaut
+    const [distanceLimit, setDistanceLimit] = useState(10);
+    const [favorites, setFavorites] = useState([]);
+    const [id, setId] = useState([]);
+    const [role, setRole] = useState([]);
 
     const haversineDistance = (lat1, lon1, lat2, lon2) => {
-        const R = 6371; // Rayon de la terre en km
+        const R = 6371;
         const dLat = (lat2 - lat1) * (Math.PI / 180);
         const dLon = (lon2 - lon1) * (Math.PI / 180);
         const a =
@@ -19,11 +25,21 @@ function ProducerList() {
             Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c; // distance en km
+        return R * c;
     };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        const id = localStorage.getItem('id');
+        setId(id);
+        const role = localStorage.getItem('role');
+        setRole(role);
+        const savedFavorites = localStorage.getItem('favorites');
+
+        if (savedFavorites) {
+            const parsedFavorites = JSON.parse(savedFavorites);
+            setFavorites(parsedFavorites);
+        }
         if (token) {
             axios.get('http://localhost:8000/api/user', {
                 headers: {
@@ -51,12 +67,22 @@ function ProducerList() {
                                 Authorization: `Bearer ${token}`,
                             },
                         }),
+                        axios.get('http://localhost:8000/api/user/favorites', {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }),
                     ]);
                 })
-                .then(([usersResponse, salesResponse]) => {
+                .then(([usersResponse, salesResponse, favoritesResponse]) => {
                     const producers = usersResponse.data.filter(user => user.role === 2);
                     setUsers(producers);
                     setSales(salesResponse.data);
+
+                    const favoritesArray = Array.isArray(favoritesResponse.data)
+                        ? favoritesResponse.data
+                        : [];
+                    setFavorites(favoritesArray);
                     setLoading(false);
                 })
                 .catch(error => {
@@ -69,14 +95,40 @@ function ProducerList() {
         }
     }, []);
 
-    // Filtrer les producteurs selon la distance
+    const toggleFavorite = async (producerId) => {
+        const token = localStorage.getItem('token');
+        try {
+            let newFavorites;
+            if (favorites.some(fav => fav.producer_id === producerId)) {
+                await axios.delete(`http://localhost:8000/api/user/favorites/${producerId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                newFavorites = favorites.filter(fav => fav.producer_id !== producerId);
+            } else {
+                await axios.post('http://localhost:8000/api/user/favorites', { producerId }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                newFavorites = [...favorites, { producer_id: producerId }];
+            }
+            setFavorites(newFavorites);
+            localStorage.setItem('favorites', JSON.stringify(newFavorites));
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+            setError('Failed to update favorites.');
+        }
+    };
+
     const filteredProducers = userLocation
         ? users.filter(user => {
             const userLat = user.latitude;
             const userLng = user.longitude;
             if (userLat && userLng) {
                 const distance = haversineDistance(userLocation.lat, userLocation.lng, userLat, userLng);
-                return distance <= distanceLimit; // Garder seulement ceux dans le rayon spécifié
+                return distance <= distanceLimit;
             }
             return false;
         })
@@ -93,7 +145,6 @@ function ProducerList() {
     return (
         <div>
             <div className="flex flex-col items-center mt-20">
-                {/* Contrôle de distance */}
                 <div className="mb-4 w-72">
                     <label htmlFor="distanceRange" className="text-[#FBD784] mb-2 block text-sm">Distance de recherche</label>
                     <input
@@ -130,7 +181,7 @@ function ProducerList() {
                             return (
                                 <div
                                     key={user.id}
-                                    className={`flex ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'} bg-transparent w-full rounded-[10px] shadow-lg p-4 border-2 border-[#FBD784]`}
+                                    className={`flex ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'} bg-transparent w-full rounded-[10px] shadow-lg p-4 border-2 border-[#FBD784] relative`}
                                 >
                                     <div className="card-body">
                                         <h3 className="card-title text-[#FBD784] text-lg">
@@ -145,6 +196,17 @@ function ProducerList() {
                                             <Link to={`/producer/${user.id}`} className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none">
                                                 Voir plus
                                             </Link>
+                                            {id !== user.id && role !== 2 ? (
+                                                <div className="absolute top-2 right-2 flex items-center">
+                                                    <FontAwesomeIcon
+                                                        icon={favorites.some(fav => fav.producer_id === user.id) ? solidHeart : regularHeart}
+                                                        onClick={() => toggleFavorite(user.id)}
+                                                        className="h-5 w-5 cursor-pointer text-[#FBD784]"
+                                                    />
+                                                </div>
+                                            ) : (
+                                                ''
+                                            )}
                                         </div>
                                     </div>
                                 </div>

@@ -66,5 +66,4 @@ const Map = ({ userLocation, producers }) => {
         </LoadScript>
     );
 };
-
 export default Map;

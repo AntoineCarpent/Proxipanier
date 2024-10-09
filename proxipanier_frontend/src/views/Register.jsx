@@ -21,7 +21,7 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const coordinates = await getCoordinates(postalCode, city);
+        const coordinates = await getCoordinates(address, city, postalCode);
         if (coordinates) {
             setLatitude(coordinates.lat);
             setLongitude(coordinates.lon);
@@ -66,16 +66,18 @@ function Register() {
         }
     };
 
-    const getCoordinates = async (postalCode) => {
-        const baseURL = "https://nominatim.openstreetmap.org/search";
-        const address = `${postalCode}, France`;
-        const url = `${baseURL}?q=${encodeURIComponent(address)}&format=json&addressdetails=1`;
+    const getCoordinates = async (address, city, postalCode) => {
+        const apiKey = "AIzaSyAlqQtweCvJ7uTSsRrhxVk40jdDi9eiWHg";
+        const fullAddress = `${address}, ${postalCode}, ${city}, France`;
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${apiKey}`;
+        console.log("url :", `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${apiKey}`)
 
         try {
             const response = await axios.get(url);
-            if (response.data && response.data.length > 0) {
-                const { lat, lon } = response.data[0];
-                return { lat, lon };
+            console.log("Response from Google Maps API:", response.data);
+            if (response.data.status === "OK") {
+                const { lat, lng } = response.data.results[0].geometry.location;
+                return { lat, lon: lng };
             } else {
                 console.error("Aucune correspondance trouvée.");
                 return null;

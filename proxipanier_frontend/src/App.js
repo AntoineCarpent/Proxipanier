@@ -1,5 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './style/App.css';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';

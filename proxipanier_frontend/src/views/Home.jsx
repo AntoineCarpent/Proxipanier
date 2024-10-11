@@ -53,7 +53,7 @@ const Home = () => {
                 <Picture />
                 <ProducerList />
             </div>
-            <div className='mr-20 ml-20'>
+            <div className='mr-10 ml-10'>
                 <Map userLocation={userLocation} producers={filteredProducers} /> {/* Passe les producteurs filtrés */}
             </div>
         </>

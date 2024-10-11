@@ -3,19 +3,37 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
     return (
-        <footer className="footer footer-center bg-[#0e2631] text-white rounded-t mt-20 flex h-24">
-            <Link to="/" className="btn btn-ghost h-24">
-                <img
-                    src="/images/logo.png"
-                    alt="Logo"
-                    className="h-24 w-auto object-contain"
-                />
-            </Link>
-            <aside>
+        <footer className="footer bg-[#0e2631] text-white rounded-t mt-12 flex flex-col items-center h-32">
+            <div className="w-full flex justify-between items-center px-8">
+                {/* Logo à gauche */}
+                <Link to="/" className="h-24">
+                    <img
+                        src="/images/logo.png"
+                        alt="Logo"
+                        className="h-24 w-auto object-contain"
+                    />
+                </Link>
+                {/* Liens à droite */}
+                <ul className="flex space-x-4">
+                    <li>
+                        <Link to="/legal-mention" className="text-white">
+                            Mentions légales
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/charte-de-confidentialité" className="text-white">
+                            Charte de confidentialité
+                        </Link>
+                    </li>
+                </ul>
+            </div>
+            {/* Copyright en dessous */}
+            <aside className="mt-4 text-center">
                 <p>Copyright © {new Date().getFullYear()} - All rights reserved by ACME Industries Ltd</p>
             </aside>
         </footer>
     );
+    
 };
 
 export default Footer;

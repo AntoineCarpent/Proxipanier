@@ -13,6 +13,8 @@ import Login from './views/Login';
 import Home from './views/Home';
 import AddSalesSheets from './components/AddSalesSheets';
 import EditSalesSheets from './components/EditSalesSheets';
+import LegalMention from './components/LegalMention';
+import Confidentiality from './components/Confidentiality';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
         <Route path="/edit-user/:id" element={<ProtectedRoute><EditUser /></ProtectedRoute>} />
         <Route path="/add-sale-sheet/:id" element={<ProtectedRoute><AddSalesSheets /></ProtectedRoute>} />
         <Route path="/edit-sale-sheet/:id" element={<ProtectedRoute><EditSalesSheets /></ProtectedRoute>} />
+        <Route path="/legal-mention" element={<ProtectedRoute><LegalMention /></ProtectedRoute>} />
+        <Route path="/charte-de-confidentialité" element={<ProtectedRoute><Confidentiality /></ProtectedRoute>} />
       </Routes>
       <Footer />
     </Router>

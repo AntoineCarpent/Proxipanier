@@ -21,8 +21,8 @@ class User extends Authenticatable
         'address',
         'postal_code',
         'city',
-        'latitude', // Ajoute la latitude ici
-        'longitude', // Ajoute la longitude ici
+        'latitude',
+        'longitude',
     ];
 
 

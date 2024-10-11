@@ -9,7 +9,7 @@ const Map = ({ userLocation, producers }) => {
         height: '400px',
     };
 
-    const center = userLocation || { lat: 48.8566, lng: 2.3522 }; // Centre par défaut (Paris)
+    const center = userLocation || { lat: 46.603354, lng: 1.888334 };
 
     const handleMarkerClick = (producer) => {
         setSelectedProducer(producer);
@@ -24,7 +24,7 @@ const Map = ({ userLocation, producers }) => {
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
-                zoom={10}
+                zoom={5}
             >
                 {producers.map((producer) => (
                     <Marker
@@ -55,7 +55,7 @@ const Map = ({ userLocation, producers }) => {
                                 href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(selectedProducer.address)},${encodeURIComponent(selectedProducer.city)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style={{ display: 'inline-block', margin: '10px', background: '#1E90FF', padding: '10px', color: '#FFFFFF', borderRadius: '20px' }}
+                                style={{ display: 'inline-block', background: '#1E90FF', color: '#FFFFFF', borderRadius: '20px' }}
                             >
                                 Itinéraire
                             </a>

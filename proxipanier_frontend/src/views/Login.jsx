@@ -5,11 +5,26 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [generalError, setGeneralError] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        setEmailError('');
+        setPasswordError('');
+        setGeneralError('');
+
+        if (!email) {
+            setEmailError('Veuillez entrer un email.');
+            return;
+        }
+        if (!password) {
+            setPasswordError('Veuillez entrer un mot de passe.');
+            return;
+        }
 
         axios.post('http://localhost:8000/api/login', {
             email,
@@ -29,13 +44,16 @@ const Login = () => {
                     navigate(`/producer/${user.id}`);
                 }
             } else {
-                console.error('User data is undefined:', response.data);
-                setError('Les données utilisateur sont manquantes.');
+                setGeneralError('Les données utilisateur sont manquantes.');
             }
         })
         .catch(err => {
-            const errorMessage = err.response?.data?.message || 'Une erreur est survenue lors de la connexion.';
-            setError(errorMessage);
+            if (err.response && err.response.status === 401) {
+                setEmailError('Email ou mot de passe incorrect.');
+                setPasswordError('Email ou mot de passe incorrect.');
+            } else {
+                setGeneralError('Une erreur est survenue lors de la connexion.');
+            }
         });
     };
 
@@ -46,7 +64,7 @@ const Login = () => {
                 style={{ backgroundImage: "url('/images/agriculteur.jpg')" }}
             ></div>
 
-            <div className="flex items-center justify-center min-h-[70vh]" style={{ backgroundColor: '#0B1D26' }}>
+            <div className="flex items-center justify-center min-h-[70vh]" style={{ backgroundColor: '#0e2631' }}>
                 <div
                     className="w-full max-w-md md:w-2/5 p-8 rounded-lg shadow-lg"
                     style={{
@@ -57,7 +75,7 @@ const Login = () => {
                 >
                     <h1 className="text-2xl font-bold text-center mb-6" style={{ color: '#FFFFFF' }}>Connexion</h1>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <label className="flex items-center gap-2">
+                        <label className="flex flex-col gap-1">
                             <input
                                 type="email"
                                 className="grow p-2 outline-none"
@@ -73,8 +91,9 @@ const Login = () => {
                                     padding: '10px',
                                 }}
                             />
+                            {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
                         </label>
-                        <label className="flex items-center gap-2">
+                        <label className="flex flex-col gap-1">
                             <input
                                 type="password"
                                 className="grow p-2 outline-none"
@@ -90,9 +109,10 @@ const Login = () => {
                                     padding: '10px',
                                 }}
                             />
+                            {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                         </label>
                         <button type="submit" className="btn w-full" style={{ backgroundColor: '#FBD784', color: '#0e2631' }}>Se connecter</button>
-                        {error && <p className="text-red-500 text-center">{error}</p>}
+                        {generalError && <p className="text-red-500 text-center">{generalError}</p>}
                     </form>
                     <p className="mt-4 text-center" style={{ color: '#FFFFFF' }}>
                         Pas encore de compte? <a href="/register" style={{ color: '#FBD784' }}>S'inscrire</a>

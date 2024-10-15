@@ -7,7 +7,7 @@ import ProducerList from '../components/ProducerList';
 const Home = () => {
     const [userLocation, setUserLocation] = useState(null);
     const [producers, setProducers] = useState([]);
-    const [postalCode, setPostalCode] = useState(''); // État pour le code postal
+    const [postalCode, setPostalCode] = useState('');
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -24,7 +24,6 @@ const Home = () => {
                         lng: user.longitude,
                     });
 
-                    // Récupérer tous les utilisateurs
                     return axios.get('http://localhost:8000/api/users', {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -32,9 +31,8 @@ const Home = () => {
                     });
                 })
                 .then((producersResponse) => {
-                    // Filtre les utilisateurs pour ne garder que ceux avec le rôle 2 (producteurs)
                     const filteredProducers = producersResponse.data.filter(producer => producer.role === 2);
-                    setProducers(filteredProducers); // Met à jour l'état avec les producteurs filtrés
+                    setProducers(filteredProducers);
                 })
                 .catch((error) => {
                     console.error('Erreur lors de la récupération des données:', error);
@@ -42,19 +40,20 @@ const Home = () => {
         }
     }, []);
 
-    // Filtre les producteurs par code postal lorsque le code postal est défini
     const filteredProducers = postalCode
         ? producers.filter(producer => producer.postal_code === postalCode)
-        : producers; // Affiche tous les producteurs si aucun code postal n'est spécifié
+        : producers;
 
     return (
         <>
-            <div className="mb-10">
+            <div className="mb-10 flex flex-col items-center">
                 <Picture />
-                <ProducerList />
+                <div className="w-full md:w-4/5 lg:w-3/5 mt-6">
+                    <ProducerList producers={filteredProducers} />
+                </div>
             </div>
             <div className='mr-10 ml-10'>
-                <Map userLocation={userLocation} producers={filteredProducers} /> {/* Passe les producteurs filtrés */}
+                <Map userLocation={userLocation} producers={filteredProducers} />
             </div>
         </>
     );

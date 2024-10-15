@@ -13,7 +13,6 @@ const ShowProducer = () => {
     const [userId, setUserId] = useState(null);
     const navigate = useNavigate();
 
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         const role = localStorage.getItem('role');
@@ -75,35 +74,36 @@ const ShowProducer = () => {
     return (
         <div>
             <Picture />
-            <div className="flex flex-col items-center mt-20">
-                <div key={producer.id} className="grid grid-cols-1 w-4/5 rounded-lg overflow-hidden bg-transparent shadow-lg p-6 border-2 border-[#FBD784] mt-4">
+            <div className="flex flex-col items-center mt-10 sm:mt-16 px-4 sm:px-6 lg:px-8">
+                <div key={producer.id} className="grid grid-cols-1 w-full sm:w-3/4 lg:w-2/3 rounded-lg overflow-hidden bg-transparent shadow-lg p-4 sm:p-6 border-2 border-[#FBD784] mt-4">
                     <div className="card-body">
-                        <h3 className="card-title text-[#FBD784] text-lg">
-                            <span className='w-10 h-px bg-[#FBD784]'></span> {producer.name || 'Nom non spécifié'} {producer.firstname || 'Nom non spécifié'}
+                        <h3 className="card-title text-[#FBD784] text-base sm:text-lg mb-4">
+                            <span className="block w-12 h-px bg-[#FBD784] mb-2"></span>
+                            {producer.name || 'Nom non spécifié'} {producer.firstname || 'Nom non spécifié'}
                         </h3>
-                        <p style={{ color: '#FFFFFF' }}>
+                        <p className="text-white text-sm sm:text-base mb-2">
                             <strong>Statut: </strong>
                             {producer.role === 1 ? 'Consommateur' : producer.role === 2 ? 'Producteur' : 'Non spécifié'}
                         </p>
-                        <p style={{ color: '#FFFFFF' }}><strong>Mail:</strong> {producer.email || 'Non spécifiée'}</p>
-                        <p style={{ color: '#FFFFFF' }}><strong>Téléphone:</strong> {producer.phone_number || 'Non spécifiée'}</p>
-                        <p style={{ color: '#FFFFFF' }}><strong>Adresse:</strong> {producer.address || 'Non spécifiée'}</p>
-                        <p style={{ color: '#FFFFFF' }}><strong>Code postal:</strong> {producer.postal_code || 'Non spécifiée'}</p>
-                        <p style={{ color: '#FFFFFF' }}><strong>Ville:</strong> {producer.city || 'Non spécifiée'}</p>
+                        <p className="text-white text-sm sm:text-base mb-2"><strong>Mail:</strong> {producer.email || 'Non spécifiée'}</p>
+                        <p className="text-white text-sm sm:text-base mb-2"><strong>Téléphone:</strong> {producer.phone_number || 'Non spécifiée'}</p>
+                        <p className="text-white text-sm sm:text-base mb-2"><strong>Adresse:</strong> {producer.address || 'Non spécifiée'}</p>
+                        <p className="text-white text-sm sm:text-base mb-2"><strong>Code postal:</strong> {producer.postal_code || 'Non spécifiée'}</p>
+                        <p className="text-white text-sm sm:text-base mb-2"><strong>Ville:</strong> {producer.city || 'Non spécifiée'}</p>
 
                         {/* Affichage conditionnel basé sur le rôle et l'ID */}
                         {userRole === '2' && userId === String(producer.id) && (
-                            <div>
-                                <div className="card-actions justify-end mt-4">
+                            <div className="mt-4 sm:mt-6">
+                                <div className="card-actions flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
                                     <Link
                                         to={`/edit-user/${producer.id}`}
-                                        className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none"
+                                        className="btn hover:text-[#0e2631] text-xs sm:text-sm text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none"
                                     >
                                         Modifier
                                     </Link>
                                     <button
                                         onClick={() => handleDelete(producer.id)}
-                                        className="btn bg-red-600 text-white hover:bg-red-700 border-none"
+                                        className="btn bg-red-600 text-xs sm:text-sm text-white hover:bg-red-700 border-none"
                                         aria-label="Supprimer l'utilisateur"
                                     >
                                         Supprimer
@@ -113,10 +113,10 @@ const ShowProducer = () => {
                         )}
 
                         <div className="mt-6 w-full">
-                            <h2 className="text-[#FBD784] text-xl text-center mb-4">Fiches de ventes</h2>
+                            <h2 className="text-[#FBD784] text-lg sm:text-xl text-center mb-4">Fiches de ventes</h2>
                             {userRole === '2' && userId === String(producer.id) && (
-                                <div className="card-actions justify-start items-center">
-                                    <Link to={`/add-sale-sheet/${producer.id}`} className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none">
+                                <div className="card-actions justify-start items-center mb-4">
+                                    <Link to={`/add-sale-sheet/${producer.id}`} className="btn hover:text-[#0e2631] text-xs sm:text-sm text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none">
                                         Ajouter une fiche de vente
                                     </Link>
                                 </div>

@@ -63,48 +63,45 @@ const SalesSheetsList = ({ producerId }) => {
     }
 
     return (
-        <div>
+        <div className="flex flex-col items-center mt-6 px-2 sm:px-4 lg:px-6">
             {salesSheets.length === 0 ? (
-                <p className="text-center text-white">Aucune vente en cours pour ce producteur</p>
+                <p className="text-center text-white text-sm sm:text-base">Aucune vente en cours pour ce producteur</p>
             ) : (
-                <div className="flex flex-col items-center mt-20">
-                    <div className="grid grid-cols-1 gap-6 w-3/4">
-                        {salesSheets.map((sheet) => (
-                            <div
-                                className="card bg-transparent w-full border border-[#FBD784] rounded-lg shadow-xl"
-                                key={sheet.id}
-                                style={{ borderRadius: '10px', borderWidth: '2px' }}
-                            >
-                                <div className="card-body">
-                                    <h3 className="card-title" style={{ color: '#FFFFFF' }}>{sheet.product_name}</h3>
-                                    <p style={{ color: '#FFFFFF' }}>Date: {sheet.date}</p>
-                                    <p style={{ color: '#FFFFFF' }}>Horaire: {sheet.start} - {sheet.end}</p>
-                                    <p style={{ color: '#FFFFFF' }}>Adresse: {sheet.address}</p>
-                                    <p style={{ color: '#FFFFFF' }}>Code postal: {sheet.postal_code}</p>
-                                    <p style={{ color: '#FFFFFF' }}>Ville: {sheet.city}</p>
-                                    <p style={{ color: '#FFFFFF' }}>Information:</p>
-                                    <p style={{ color: '#FFFFFF' }}>{sheet.description}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-6xl">
+                    {salesSheets.map((sheet) => (
+                        <div
+                            className="card bg-transparent w-full border border-[#FBD784] rounded-lg shadow-xl p-2 sm:p-4"
+                            key={sheet.id}
+                        >
+                            <div className="card-body">
+                                <h3 className="card-title text-[#FBD784] text-sm sm:text-base">{sheet.product_name}</h3>
+                                <p className="text-white text-xs sm:text-sm">Date: {sheet.date}</p>
+                                <p className="text-white text-xs sm:text-sm">Horaire: {sheet.start} - {sheet.end}</p>
+                                <p className="text-white text-xs sm:text-sm">Adresse: {sheet.address}</p>
+                                <p className="text-white text-xs sm:text-sm">Code postal: {sheet.postal_code}</p>
+                                <p className="text-white text-xs sm:text-sm">Ville: {sheet.city}</p>
+                                <p className="text-white text-xs sm:text-sm">Information:</p>
+                                <p className="text-white text-xs sm:text-sm">{sheet.description}</p>
 
-                                    {sheet.user_id === userId && (
-                                        <div className="card-actions justify-end">
-                                            <Link
-                                                to={`/edit-sale-sheet/${sheet.id}`}
-                                                className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none"
-                                            >
-                                                Modifier
-                                            </Link>
-                                            <button
-                                                onClick={() => deleteSalesSheet(sheet.id)}
-                                                className="btn hover:text-[#0e2631] text-red-500 hover:bg-red-500 bg-transparent border-red-500 hover:border-none ml-4"
-                                            >
-                                                Supprimer
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
+                                {sheet.user_id === userId && (
+                                    <div className="card-actions flex justify-end space-x-2 sm:space-x-4 mt-2">
+                                        <Link
+                                            to={`/edit-sale-sheet/${sheet.id}`}
+                                            className="btn hover:text-[#0e2631] text-xs sm:text-sm text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none"
+                                        >
+                                            Modifier
+                                        </Link>
+                                        <button
+                                            onClick={() => deleteSalesSheet(sheet.id)}
+                                            className="btn hover:text-[#0e2631] text-xs sm:text-sm text-red-500 hover:bg-red-500 bg-transparent border-red-500 hover:border-none"
+                                        >
+                                            Supprimer
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

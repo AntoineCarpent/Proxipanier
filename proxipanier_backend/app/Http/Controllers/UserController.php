@@ -66,7 +66,7 @@ class UserController extends Controller
             'message' => 'User Created Successfully',
             'token' => $token,
             'user' => $user
-        ], 200);
+        ], 201);
     }
 
     public function login(Request $request)
@@ -97,7 +97,7 @@ class UserController extends Controller
                 'message' => 'Login successful',
                 'user' => $user,
                 'token' => $token,
-            ], 200);
+            ], 201);
         }
 
         return response()->json([

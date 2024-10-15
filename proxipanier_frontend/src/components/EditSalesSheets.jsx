@@ -59,7 +59,7 @@ const EditSalesSheets = () => {
             {
                 product_name: productName,
                 date,
-                start: formattedStart, // Utilise les heures formatées ici
+                start: formattedStart,
                 end: formattedEnd,
                 price,
                 address,

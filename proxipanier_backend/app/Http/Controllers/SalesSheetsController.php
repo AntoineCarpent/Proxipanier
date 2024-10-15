@@ -56,7 +56,7 @@ class SalesSheetsController extends Controller
             'status' => true,
             'message' => 'Sales sheet created successfully',
             'data' => $saleSheet,
-        ], 200);
+        ], 201);
     }
 
 
@@ -95,7 +95,7 @@ class SalesSheetsController extends Controller
             'status' => true,
             'message' => 'Sales sheet updated successfully',
             'data' => $saleSheet,
-        ], 200);
+        ], 201);
     }
 
     public function destroy(String $id)
@@ -107,7 +107,7 @@ class SalesSheetsController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'saleSheet deleted successfully',
-            ], 200);
+            ], 201);
         }
 
         return response()->json([

@@ -16,8 +16,8 @@ COPY proxipanier_backend/ /var/www/html
 # Supprimer le fichier composer.lock pour éviter les conflits de versions
 RUN rm -f composer.lock
 
-# Installer les dépendances PHP avec Composer
-RUN composer install --verbose
+# Installer les dépendances PHP avec Composer en tant que super utilisateur
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --verbose
 
 # Créer le lien symbolique pour le stockage Laravel
 RUN php artisan storage:link

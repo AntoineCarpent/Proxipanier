@@ -2,21 +2,30 @@ FROM php:8.2-cli
 
 WORKDIR /var/www/html
 
+# Installer les dépendances nécessaires
 RUN apt-get update && \
     apt-get install -y libzip-dev unzip git && \
     docker-php-ext-install pdo pdo_mysql zip
 
+# Installer Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Copier les fichiers du projet
 COPY proxipanier_backend/ /var/www/html
 
+# Supprimer le fichier composer.lock pour éviter les conflits
+RUN rm -f composer.lock
+
+# Installer les dépendances PHP avec Composer
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --verbose
+
+# Ajuster les permissions
+RUN chown -R www-data:www-data /var/www/html
 RUN chmod +x /var/www/html/artisan
 
-RUN chown -R www-data:www-data /var/www/html
-
-RUN composer install --verbose
-
+# Exposer le port de l'application
 EXPOSE 1000
 
-CMD php artisan migrate &&\
+# Exécuter les migrations et lancer le serveur
+CMD php artisan migrate && \
     php artisan serve --host=0.0.0.0 --port=${PORT:-1000}

@@ -41,7 +41,7 @@ function ProducerList() {
             setFavorites(parsedFavorites);
         }
         if (token) {
-            axios.get('https://proxipanier.onrender.com/api/user', {
+            axios.get('http://localhost:8000/api/user', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -54,7 +54,7 @@ function ProducerList() {
                     });
 
                     return Promise.all([
-                        axios.get('https://proxipanier.onrender.com/api/users', {
+                        axios.get('http://localhost:8000/api/users', {
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
@@ -62,12 +62,12 @@ function ProducerList() {
                                 role: 2,
                             },
                         }),
-                        axios.get('https://proxipanier.onrender.com/api/salesSheets', {
+                        axios.get('http://localhost:8000/api/salesSheets', {
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
                         }),
-                        axios.get('https://proxipanier.onrender.com/api/user/favorites', {
+                        axios.get('http://localhost:8000/api/user/favorites', {
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
@@ -100,14 +100,14 @@ function ProducerList() {
         try {
             let newFavorites;
             if (favorites.some(fav => fav.producer_id === producerId)) {
-                await axios.delete(`https://proxipanier.onrender.com/api/user/favorites/${producerId}`, {
+                await axios.delete(`http://localhost:8000/api/user/favorites/${producerId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
                 newFavorites = favorites.filter(fav => fav.producer_id !== producerId);
             } else {
-                await axios.post('https://proxipanier.onrender.com/api/user/favorites', { producerId }, {
+                await axios.post('http://localhost:8000/api/user/favorites', { producerId }, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

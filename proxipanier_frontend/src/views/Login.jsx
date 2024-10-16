@@ -26,7 +26,7 @@ const Login = () => {
             return;
         }
 
-        axios.post('https://proxipanier.onrender.com/api/login', {
+        axios.post('http://localhost:8000/api/login', {
             email,
             password
         })

@@ -26,7 +26,7 @@ function Register() {
             setLatitude(coordinates.lat);
             setLongitude(coordinates.lon);
 
-            axios.post('https://proxipanier.onrender.com/api/register', {
+            axios.post('http://localhost:8000/api/register', {
                 name,
                 firstname,
                 email,

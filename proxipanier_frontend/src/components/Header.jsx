@@ -24,7 +24,7 @@ const Header = () => {
         const role = localStorage.getItem('role');
 
         if (token && id) {
-            axios.get(`https://proxipanier.onrender.com/api/users/${id}`, {
+            axios.get(`http://localhost:8000/api/users/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

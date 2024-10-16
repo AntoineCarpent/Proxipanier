@@ -23,7 +23,7 @@ const EditSalesSheets = () => {
 
         const fetchSalesSheet = async () => {
             if (id && token) {
-                const response = await axios.get(`https://proxipanier.onrender.com/api/salesSheets/${id}`, {
+                const response = await axios.get(`http://localhost:8000/api/salesSheets/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -55,7 +55,7 @@ const EditSalesSheets = () => {
         const formattedEnd = moment(end, "HH:mm").format("HH:mm");
     
         const response = await axios.put(
-            `https://proxipanier.onrender.com/api/salesSheets/${id}`,
+            `http://localhost:8000/api/salesSheets/${id}`,
             {
                 product_name: productName,
                 date,

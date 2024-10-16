@@ -14,7 +14,7 @@ const SalesSheetsList = ({ producerId }) => {
         setUserId(currentUserId);
 
         if (token) {
-            axios.get('https://proxipanier.onrender.com/api/salesSheets', {
+            axios.get('http://localhost:8000/api/salesSheets', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -38,7 +38,7 @@ const SalesSheetsList = ({ producerId }) => {
         const token = localStorage.getItem('token');
 
         if (token) {
-            axios.delete(`https://proxipanier.onrender.com/api/salesSheets/${sheetId}`, {
+            axios.delete(`http://localhost:8000/api/salesSheets/${sheetId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

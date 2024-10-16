@@ -6,7 +6,7 @@ const Favorites = () => {
     useEffect(() => {
         const fetchFavorites = async () => {
             const token = localStorage.getItem('token');
-            const response = await axios.get('https://proxipanier.onrender.com/api/user/favorites', {
+            const response = await axios.get('http://localhost:8000/api/user/favorites', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

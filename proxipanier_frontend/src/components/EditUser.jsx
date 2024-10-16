@@ -19,7 +19,7 @@ const EditUser = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (id) {
-            axios.get(`http://localhost:8000/api/users/${id}`, {
+            axios.get(`https://proxipanier.onrender.com/api/users/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -48,7 +48,7 @@ const EditUser = () => {
 
         const token = localStorage.getItem('token');
 
-        axios.put(`http://localhost:8000/api/users/${id}`, {
+        axios.put(`https://proxipanier.onrender.com/api/users/${id}`, {
             role,
             name,
             firstname,

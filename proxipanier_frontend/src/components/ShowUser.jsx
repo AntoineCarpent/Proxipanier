@@ -26,7 +26,7 @@ const ShowUser = () => {
 
 
         if (token) {
-            axios.get(`http://localhost:8000/api/users/${id}`, {
+            axios.get(`https://proxipanier.onrender.com/api/users/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -53,7 +53,7 @@ const ShowUser = () => {
             return;
         }
 
-        axios.delete(`http://localhost:8000/api/users/${id}`, {
+        axios.delete(`https://proxipanier.onrender.com/api/users/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -72,14 +72,14 @@ const ShowUser = () => {
         try {
             let newFavorites;
             if (favorites.some(fav => fav.producer_id === producerId)) {
-                await axios.delete(`http://localhost:8000/api/user/favorites/${producerId}`, {
+                await axios.delete(`https://proxipanier.onrender.com/api/user/favorites/${producerId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
                 newFavorites = favorites.filter(fav => fav.producer_id !== producerId);
             } else {
-                await axios.post('http://localhost:8000/api/user/favorites', { producerId }, {
+                await axios.post('https://proxipanier.onrender.com/api/user/favorites', { producerId }, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

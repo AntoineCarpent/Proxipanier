@@ -12,7 +12,7 @@ const Home = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            axios.get('http://localhost:8000/api/user', {
+            axios.get('https://proxipanier.onrender.com/api/user', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -24,7 +24,7 @@ const Home = () => {
                         lng: user.longitude,
                     });
 
-                    return axios.get('http://localhost:8000/api/users', {
+                    return axios.get('https://proxipanier.onrender.com/api/users', {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },

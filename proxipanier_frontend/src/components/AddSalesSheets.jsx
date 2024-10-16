@@ -22,7 +22,7 @@ const AddSalesSheets = () => {
             const token = localStorage.getItem('token');
             if (id && token) {
                 try {
-                    const response = await axios.get(`http://localhost:8000/api/users/${id}`, {
+                    const response = await axios.get(`https://proxipanier.onrender.com/api/users/${id}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -45,7 +45,7 @@ const AddSalesSheets = () => {
 
         try {
             const response = await axios.post(
-                'http://localhost:8000/api/salesSheets',
+                'https://proxipanier.onrender.com/api/salesSheets',
                 {
                     product_name: productName,
                     date,

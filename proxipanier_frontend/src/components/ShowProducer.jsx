@@ -21,7 +21,7 @@ const ShowProducer = () => {
         setUserId(currentUserId);
 
         if (token) {
-            axios.get(`http://localhost:8000/api/users/${id}`, {
+            axios.get(`https://proxipanier.onrender.com/api/users/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -48,7 +48,7 @@ const ShowProducer = () => {
             return;
         }
 
-        axios.delete(`http://localhost:8000/api/users/${id}`, {
+        axios.delete(`https://proxipanier.onrender.com/api/users/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

@@ -81,11 +81,7 @@ const ShowProducer = () => {
                             <span className="block w-12 h-px bg-[#FBD784] mb-2"></span>
                             {producer.name || 'Nom non spécifié'} {producer.firstname || 'Nom non spécifié'}
                         </h3>
-                        <p className="text-white text-sm sm:text-base mb-2">
-                            <strong>Statut: </strong>
-                            {producer.role === 1 ? 'Consommateur' : producer.role === 2 ? 'Producteur' : 'Non spécifié'}
-                        </p>
-                        <p className="text-white text-sm sm:text-base mb-2"><strong>Mail:</strong> {producer.email || 'Non spécifiée'}</p>
+                        
                         <p className="text-white text-sm sm:text-base mb-2"><strong>Téléphone:</strong> {producer.phone_number || 'Non spécifiée'}</p>
                         <p className="text-white text-sm sm:text-base mb-2"><strong>Adresse:</strong> {producer.address || 'Non spécifiée'}</p>
                         <p className="text-white text-sm sm:text-base mb-2"><strong>Code postal:</strong> {producer.postal_code || 'Non spécifiée'}</p>

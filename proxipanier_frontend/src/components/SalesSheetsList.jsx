@@ -80,6 +80,7 @@ const SalesSheetsList = ({ producerId }) => {
                                 <p className="text-white text-xs sm:text-sm">Adresse: {sheet.address}</p>
                                 <p className="text-white text-xs sm:text-sm">Code postal: {sheet.postal_code}</p>
                                 <p className="text-white text-xs sm:text-sm">Ville: {sheet.city}</p>
+                                <p className="text-white text-xs sm:text-sm">Prix: {sheet.price}</p>
                                 <p className="text-white text-xs sm:text-sm">Information:</p>
                                 <p className="text-white text-xs sm:text-sm">{sheet.description}</p>
 

@@ -110,10 +110,7 @@ const ShowUser = () => {
                         <h3 className="card-title text-[#FBD784] text-lg">
                             <span className='w-10 h-px bg-[#FBD784]'></span>{user.name || 'Nom non spécifié'} {user.firstname || 'Nom non spécifié'}
                         </h3>
-                        <p style={{ color: '#FFFFFF' }}>
-                            <strong>Statut: </strong>
-                            {user.role === 1 ? 'Consommateur' : user.role === 2 ? 'Producteur' : 'Non spécifié'}
-                        </p>
+                    
                         <p style={{ color: '#FFFFFF' }}><strong>Mail:</strong> {user.email || 'Non spécifiée'}</p>
 
                         {user.role !== 1 && (

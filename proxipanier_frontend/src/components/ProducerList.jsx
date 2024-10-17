@@ -143,12 +143,10 @@ function ProducerList() {
     }
 
     return (
-        <div className="px-4">
-            <div className="flex flex-col items-center mt-10 md:mt-20">
+        <div className="mt-20">
+            <div className="flex flex-col items-center">
                 <div className="mb-4 w-full max-w-md">
-                    <label htmlFor="distanceRange" className="text-[#FBD784] mb-2 block text-sm md:text-base">
-                        Distance de recherche
-                    </label>
+                    <label htmlFor="distanceRange" className="text-[#FBD784] mb-2 block text-sm">Distance de recherche</label>
                     <input
                         id="distanceRange"
                         type="range"
@@ -157,12 +155,12 @@ function ProducerList() {
                         step={10}
                         value={distanceLimit}
                         onChange={(e) => setDistanceLimit(Number(e.target.value))}
-                        className="w-full h-3 bg-[#FBD784] rounded-lg appearance-none cursor-pointer"
+                        className="w-full h-4 bg-[#FBD784] rounded-lg appearance-none cursor-pointer"
                         style={{
                             background: `#FBD784`,
                         }}
                     />
-                    <div className="flex justify-between px-2 text-xs text-[#FBD784]">
+                    <div className="flex w-full justify-between px-2 text-xs text-[#FBD784]">
                         <span>0 km</span>
                         <span>10 km</span>
                         <span>20 km</span>
@@ -172,7 +170,7 @@ function ProducerList() {
                     </div>
                 </div>
     
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-5xl">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-4/5 rounded-lg overflow-hidden">
                     {filteredProducers.length > 0 ? (
                         filteredProducers.map((user, index) => {
                             const userSales = sales.filter(sale => sale.user_id === user.id);
@@ -183,19 +181,19 @@ function ProducerList() {
                             return (
                                 <div
                                     key={user.id}
-                                    className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} bg-transparent w-full rounded-[10px] shadow-lg p-4 border-2 border-[#FBD784] relative`}
+                                    className={`flex flex-col ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'} bg-transparent w-full rounded-[10px] shadow-lg p-4 border-2 border-[#FBD784] relative`}
                                 >
-                                    <div className="card-body">
-                                        <h3 className="card-title text-[#FBD784] text-sm md:text-lg">
+                                    <div className="card-body flex-1">
+                                        <h3 className="card-title text-[#FBD784] text-lg">
                                             <span className='w-10 h-px bg-[#FBD784]'></span>{user.name}
                                         </h3>
                                         <br />
-                                        <p className="text-white text-xs md:text-base">Ville: {user.city || 'Non spécifiée'}</p>
-                                        <p className="text-white text-xs md:text-base">
+                                        <p style={{ color: '#FFFFFF' }}>Ville: {user.city || 'Non spécifiée'}</p>
+                                        <p style={{ color: '#FFFFFF' }}>
                                             Ventes actuelles: {salesNames}
                                         </p>
                                         <div className="card-actions justify-end items-center">
-                                            <Link to={`/producer/${user.id}`} className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none text-xs md:text-sm">
+                                            <Link to={`/producer/${user.id}`} className="btn hover:text-[#0e2631] text-[#FBD784] hover:bg-[#FBD784] bg-transparent border-[#FBD784] hover:border-none">
                                                 Voir plus
                                             </Link>
                                             {id !== user.id && role !== 2 ? (
@@ -203,7 +201,7 @@ function ProducerList() {
                                                     <FontAwesomeIcon
                                                         icon={favorites.some(fav => fav.producer_id === user.id) ? solidHeart : regularHeart}
                                                         onClick={() => toggleFavorite(user.id)}
-                                                        className="h-4 w-4 md:h-5 md:w-5 cursor-pointer text-[#FBD784]"
+                                                        className="h-5 w-5 cursor-pointer text-[#FBD784]"
                                                     />
                                                 </div>
                                             ) : (
@@ -215,9 +213,7 @@ function ProducerList() {
                             );
                         })
                     ) : (
-                        <p className="text-white text-xs md:text-base">
-                            Aucun producteur disponible dans un rayon de {distanceLimit} km.
-                        </p>
+                        <p style={{ color: '#FFFFFF' }}>Aucun producteur disponible dans un rayon de {distanceLimit} km.</p>
                     )}
                 </div>
             </div>

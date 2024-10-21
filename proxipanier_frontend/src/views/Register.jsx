@@ -58,7 +58,10 @@ function Register() {
                     }
                 })
                 .catch(error => {
-                    setError(error.response?.data?.message || "Une erreur est survenue lors de l'enregistrement.");
+                    if (error.response && error.response.data) {
+                        console.log("errors", error.response.data.errors);
+                        setError(error.response.data.errors);
+                    }
                 });
         } else {
             console.error('Les coordonnées ne sont pas disponibles.');
@@ -157,6 +160,9 @@ function Register() {
                                 }}
                             />
                         </label>
+
+                        {error.name && <p style={{ color: 'red' }}>{error.name[0]}</p>}
+
                         <label className="flex items-center gap-2">
                             <input
                                 type="text"
@@ -174,6 +180,9 @@ function Register() {
                                 }}
                             />
                         </label>
+
+                        {error.firstname && <p style={{ color: 'red' }}>{error.firstname[0]}</p>}
+
                         <label className="flex items-center gap-2">
                             <input
                                 type="email"
@@ -191,6 +200,9 @@ function Register() {
                                 }}
                             />
                         </label>
+
+                        {error.email && <p style={{ color: 'red' }}>{error.email[0]}</p>}
+
                         <label className="flex items-center gap-2">
                             <input
                                 type="password"
@@ -208,6 +220,8 @@ function Register() {
                                 }}
                             />
                         </label>
+
+                        {error.password && <p style={{ color: 'red' }}>{error.password[0]}</p>}
 
                         {role === 2 && (
                             <>
@@ -228,6 +242,9 @@ function Register() {
                                         }}
                                     />
                                 </label>
+
+                                {error.phone && <p style={{ color: 'red' }}>{error.phone[0]}</p>}
+
                                 <label className="flex items-center gap-2">
                                     <input
                                         type="text"
@@ -245,6 +262,9 @@ function Register() {
                                         }}
                                     />
                                 </label>
+
+                                {error.address && <p style={{ color: 'red' }}>{error.address[0]}</p>}
+
                             </>
                         )}
 
@@ -265,6 +285,9 @@ function Register() {
                                 }}
                             />
                         </label>
+
+                        {error.postal_code && <p style={{ color: 'red' }}>{error.postal_code[0]}</p>}
+
                         <label className="flex items-center gap-2">
                             <input
                                 type="text"
@@ -282,6 +305,8 @@ function Register() {
                                 }}
                             />
                         </label>
+
+                        {error.city && <p style={{ color: 'red' }}>{error.city[0]}</p>}
 
                         <button
                             type="submit"

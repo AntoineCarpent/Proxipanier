@@ -141,7 +141,7 @@ const ShowUser = () => {
                     </div>
                 </div>
                 <div className="mt-6 w-4/5">
-                    <h2 className="text-[#FBD784] text-xl text-center mb-4">Vos producteurs favoris</h2>
+                    <h2 className="text-[#FBD784] text-xl text-center mb-4">Les producteurs proche de chez vous</h2>
                     {favorites.length > 0 ? (
                         <ProducerList favorites={favorites} />
                     ) : (

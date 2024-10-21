@@ -5,7 +5,7 @@ const Footer = () => {
     return (
         <footer className="footer bg-[#0e2631] text-white rounded-t mt-12 flex flex-col items-center h-32">
             <div className="w-full flex justify-between items-center px-8">
-                {/* Logo à gauche */}
+
                 <Link to="/" className="h-24">
                     <img
                         src="/images/logo.png"
@@ -13,7 +13,7 @@ const Footer = () => {
                         className="h-24 w-auto object-contain"
                     />
                 </Link>
-                {/* Liens à droite */}
+
                 <ul className="flex space-x-4">
                     <li>
                         <Link to="/legal-mention" className="text-white">
@@ -27,7 +27,7 @@ const Footer = () => {
                     </li>
                 </ul>
             </div>
-            {/* Copyright en dessous */}
+
             <aside className="mt-4 text-center">
                 <p>Copyright © {new Date().getFullYear()} - All rights reserved by ACME Industries Ltd</p>
             </aside>

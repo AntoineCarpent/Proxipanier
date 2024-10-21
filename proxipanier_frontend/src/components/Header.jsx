@@ -62,7 +62,7 @@ const Header = () => {
             </div>
     
             <div className="navbar-end">
-                {/* Dropdown pour écrans larges */}
+
                 <div className="dropdown hidden lg:block">
                     <div tabIndex={0} className="btn btn-ghost">
                         <svg
@@ -105,7 +105,7 @@ const Header = () => {
                     </ul>
                 </div>
     
-                {/* Menu pour écrans petits à moyens */}
+
                 <div className="dropdown lg:hidden">
                     <div tabIndex={0} className="btn btn-ghost">
                         <svg

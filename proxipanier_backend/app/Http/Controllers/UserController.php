@@ -73,7 +73,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
         ]);
 
         if ($validator->fails()) {
@@ -216,10 +216,9 @@ class UserController extends Controller
         return response()->json($user->favorites()->with('producer')->get());
     }
 
-    // Ajouter un producteur aux favoris
     public function addFavorite(Request $request)
     {
-        \Log::info('Received request to add favorite:', $request->all()); // Ajoutez cette ligne pour le débogage
+        \Log::info('Received request to add favorite:', $request->all());
     
         $request->validate([
             'producerId' => 'required|exists:users,id',
@@ -234,7 +233,6 @@ class UserController extends Controller
         return response()->json($favorite);
     }
 
-    // Retirer un producteur des favoris
     public function removeFavorite($producerId)
     {
         $user = Auth::user();

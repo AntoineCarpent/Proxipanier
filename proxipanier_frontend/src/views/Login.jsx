@@ -8,6 +8,7 @@ const Login = () => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [generalError, setGeneralError] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -30,31 +31,29 @@ const Login = () => {
             email,
             password
         })
-        .then(response => {
-            if (response.data.token && response.data.user) {
-                const { token, user } = response.data;
+            .then(response => {
+                if (response.data.token && response.data.user) {
+                    const { token, user } = response.data;
 
-                localStorage.setItem('token', token);
-                localStorage.setItem('id', user.id);
-                localStorage.setItem('role', user.role);
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('id', user.id);
+                    localStorage.setItem('role', user.role);
 
-                if (user.role === 1) {
-                    navigate('/');
-                } else if (user.role === 2) {
-                    navigate(`/producer/${user.id}`);
+                    if (user.role === 1) {
+                        navigate('/');
+                    } else if (user.role === 2) {
+                        navigate(`/producer/${user.id}`);
+                    }
+                } else {
+                    setGeneralError('Les données utilisateur sont manquantes.');
                 }
-            } else {
-                setGeneralError('Les données utilisateur sont manquantes.');
-            }
-        })
-        .catch(err => {
-            if (err.response && err.response.status === 401) {
-                setEmailError('Email ou mot de passe incorrect.');
-                setPasswordError('Email ou mot de passe incorrect.');
-            } else {
-                setGeneralError('Une erreur est survenue lors de la connexion.');
-            }
-        });
+            })
+            .catch(error => {
+                if (error.response && error.response.data) {
+                    console.log("errors", error.response.data.errors);
+                    setError(error.response.data.errors);
+                }
+            });
     };
 
     return (
@@ -91,8 +90,10 @@ const Login = () => {
                                     padding: '10px',
                                 }}
                             />
-                            {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
                         </label>
+
+                            {error.email && <p style={{ color: 'red' }}>{error.email[0]}</p>}
+
                         <label className="flex flex-col gap-1">
                             <input
                                 type="password"
@@ -109,8 +110,10 @@ const Login = () => {
                                     padding: '10px',
                                 }}
                             />
-                            {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                         </label>
+
+                        {error.password && <p style={{ color: 'red' }}>{error.password[0]}</p>}
+
                         <button type="submit" className="btn w-full" style={{ backgroundColor: '#FBD784', color: '#0e2631' }}>Se connecter</button>
                         {generalError && <p className="text-red-500 text-center">{generalError}</p>}
                     </form>
